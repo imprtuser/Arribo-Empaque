@@ -117,23 +117,49 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="spanish_flag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\spanish_flag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="cajas" xml:space="preserve">
+    <value>Boxes</value>
   </data>
-  <data name="english_flag" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\english_flag.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="cancelar" xml:space="preserve">
+    <value>Cancel</value>
   </data>
-  <data name="green" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\green.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="capArribo" xml:space="preserve">
+    <value>Arrival Packing</value>
   </data>
-  <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\logo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="cargando" xml:space="preserve">
+    <value>Loading Info...</value>
   </data>
-  <data name="background-planning" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\background-planning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="contrasena" xml:space="preserve">
+    <value>Password</value>
   </data>
-  <data name="red" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="fecha" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="folio" xml:space="preserve">
+    <value>Folio</value>
+  </data>
+  <data name="guardar" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="habilitarPeso" xml:space="preserve">
+    <value>Enable Weigth</value>
+  </data>
+  <data name="iniciar" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="librasNetas" xml:space="preserve">
+    <value>Net Libs</value>
+  </data>
+  <data name="noData" xml:space="preserve">
+    <value>No Data</value>
+  </data>
+  <data name="taraCaja" xml:space="preserve">
+    <value>Tare Box</value>
+  </data>
+  <data name="taraTarima" xml:space="preserve">
+    <value>Tare Pallet</value>
+  </data>
+  <data name="usuario" xml:space="preserve">
+    <value>User</value>
   </data>
 </root>
