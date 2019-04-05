@@ -30,6 +30,9 @@ namespace ArriboEmpaque
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
+            btnLogin.Enabled = false;
+            txtUser.Enabled = false;
+            txtPassword.Enabled = false;
             pgLogin.Show();
             pgLogin.Value = 50;
             lblLoginLoading.Show();

@@ -84,6 +84,8 @@
       <DependentUpon>CapturaArriboEmpaque.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\Folio.cs" />
+    <Compile Include="Classes\FolioDetails.cs" />
+    <Compile Include="Classes\FolioHeader.cs" />
     <Compile Include="Classes\LoginResponse.cs" />
     <Compile Include="Classes\ResponseType.cs" />
     <Compile Include="Classes\UserLogin.cs" />
@@ -131,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\background-planning.png" />
+    <Content Include="Resources\delete.png" />
     <Content Include="Resources\english_flag.png" />
     <Content Include="Resources\green.png" />
     <Content Include="Resources\logo.png" />

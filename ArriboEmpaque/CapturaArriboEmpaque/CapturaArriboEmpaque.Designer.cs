@@ -35,29 +35,40 @@
             this.tbControl = new System.Windows.Forms.TabControl();
             this.tabCapturaArriboEmpaque = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtIDCaptura = new System.Windows.Forms.TextBox();
+            this.lblIDCaptura = new System.Windows.Forms.Label();
+            this.lblIdHeader = new System.Windows.Forms.Label();
+            this.dgvAddFolios = new System.Windows.Forms.DataGridView();
             this.lblVersion = new System.Windows.Forms.Label();
             this.lblLibs = new System.Windows.Forms.Label();
-            this.lblNoData = new System.Windows.Forms.Label();
             this.pgInfoFolio = new System.Windows.Forms.ProgressBar();
             this.lblLoadingInfo = new System.Windows.Forms.Label();
             this.btnHasConnection = new System.Windows.Forms.PictureBox();
             this.btnLangCAE = new System.Windows.Forms.PictureBox();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.txtLibs = new System.Windows.Forms.TextBox();
+            this.txtGrossLibs = new System.Windows.Forms.TextBox();
             this.txtBoxes = new System.Windows.Forms.TextBox();
             this.lblBoxes = new System.Windows.Forms.Label();
             this.chEnableWeigth = new System.Windows.Forms.CheckBox();
+            this.cbTareBox = new System.Windows.Forms.ComboBox();
+            this.lblTareBox = new System.Windows.Forms.Label();
             this.cbTareTarima = new System.Windows.Forms.ComboBox();
             this.lblTareTarima = new System.Windows.Forms.Label();
+            this.lblGP = new System.Windows.Forms.Label();
+            this.lblQuality = new System.Windows.Forms.Label();
             this.lblGreenhouse = new System.Windows.Forms.Label();
+            this.lblPlant = new System.Windows.Forms.Label();
             this.lblDate = new System.Windows.Forms.Label();
+            this.lblFolioName = new System.Windows.Forms.Label();
             this.lblCapArribo = new System.Windows.Forms.Label();
             this.lblFolio = new System.Windows.Forms.Label();
             this.txtFolio = new System.Windows.Forms.TextBox();
             this.tabConsultaArriboEmpaque = new System.Windows.Forms.TabPage();
             this.tlpConsult = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtIDConsulta = new System.Windows.Forms.TextBox();
+            this.lblIDConsulta = new System.Windows.Forms.Label();
             this.txtFolioFilter = new System.Windows.Forms.TextBox();
             this.btnFilter = new System.Windows.Forms.Button();
             this.dtpDateFin = new System.Windows.Forms.DateTimePicker();
@@ -76,16 +87,12 @@
             this.pbFolios = new System.Windows.Forms.ProgressBar();
             this.lblReady = new System.Windows.Forms.Label();
             this.lblTotalRecords = new System.Windows.Forms.Label();
-            this.lblPlant = new System.Windows.Forms.Label();
-            this.lblGP = new System.Windows.Forms.Label();
-            this.lblQuality = new System.Windows.Forms.Label();
-            this.lblFolioName = new System.Windows.Forms.Label();
-            this.lblTareBox = new System.Windows.Forms.Label();
-            this.cbTareBox = new System.Windows.Forms.ComboBox();
+            this.backgroundWorkerGetFoliosByID = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1.SuspendLayout();
             this.tbControl.SuspendLayout();
             this.tabCapturaArriboEmpaque.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAddFolios)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnHasConnection)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnLangCAE)).BeginInit();
             this.tabConsultaArriboEmpaque.SuspendLayout();
@@ -101,7 +108,7 @@
             this.archivoToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1127, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1270, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip";
             // 
@@ -128,7 +135,7 @@
             this.tbControl.Location = new System.Drawing.Point(0, 27);
             this.tbControl.Name = "tbControl";
             this.tbControl.SelectedIndex = 0;
-            this.tbControl.Size = new System.Drawing.Size(1127, 504);
+            this.tbControl.Size = new System.Drawing.Size(1239, 542);
             this.tbControl.TabIndex = 1;
             this.tbControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tbControl_Selecting);
             // 
@@ -139,7 +146,7 @@
             this.tabCapturaArriboEmpaque.Location = new System.Drawing.Point(4, 22);
             this.tabCapturaArriboEmpaque.Name = "tabCapturaArriboEmpaque";
             this.tabCapturaArriboEmpaque.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCapturaArriboEmpaque.Size = new System.Drawing.Size(1119, 478);
+            this.tabCapturaArriboEmpaque.Size = new System.Drawing.Size(1231, 516);
             this.tabCapturaArriboEmpaque.TabIndex = 0;
             this.tabCapturaArriboEmpaque.Text = "Captura de Arribo Empaque";
             this.tabCapturaArriboEmpaque.UseVisualStyleBackColor = true;
@@ -147,16 +154,19 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.txtIDCaptura);
+            this.panel1.Controls.Add(this.lblIDCaptura);
+            this.panel1.Controls.Add(this.lblIdHeader);
+            this.panel1.Controls.Add(this.dgvAddFolios);
             this.panel1.Controls.Add(this.lblVersion);
             this.panel1.Controls.Add(this.lblLibs);
-            this.panel1.Controls.Add(this.lblNoData);
             this.panel1.Controls.Add(this.pgInfoFolio);
             this.panel1.Controls.Add(this.lblLoadingInfo);
             this.panel1.Controls.Add(this.btnHasConnection);
             this.panel1.Controls.Add(this.btnLangCAE);
             this.panel1.Controls.Add(this.btnSave);
             this.panel1.Controls.Add(this.btnCancel);
-            this.panel1.Controls.Add(this.txtLibs);
+            this.panel1.Controls.Add(this.txtGrossLibs);
             this.panel1.Controls.Add(this.txtBoxes);
             this.panel1.Controls.Add(this.lblBoxes);
             this.panel1.Controls.Add(this.chEnableWeigth);
@@ -173,16 +183,58 @@
             this.panel1.Controls.Add(this.lblCapArribo);
             this.panel1.Controls.Add(this.lblFolio);
             this.panel1.Controls.Add(this.txtFolio);
-            this.panel1.Location = new System.Drawing.Point(148, 28);
+            this.panel1.Location = new System.Drawing.Point(45, 28);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(835, 442);
+            this.panel1.Size = new System.Drawing.Size(1144, 466);
             this.panel1.TabIndex = 0;
+            // 
+            // txtIDCaptura
+            // 
+            this.txtIDCaptura.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIDCaptura.Location = new System.Drawing.Point(287, 89);
+            this.txtIDCaptura.Margin = new System.Windows.Forms.Padding(2);
+            this.txtIDCaptura.Name = "txtIDCaptura";
+            this.txtIDCaptura.Size = new System.Drawing.Size(47, 30);
+            this.txtIDCaptura.TabIndex = 151;
+            this.txtIDCaptura.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtIDCaptura_KeyPress);
+            this.txtIDCaptura.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtIDCaptura_PreviewKeyDown);
+            // 
+            // lblIDCaptura
+            // 
+            this.lblIDCaptura.AutoSize = true;
+            this.lblIDCaptura.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIDCaptura.Location = new System.Drawing.Point(283, 67);
+            this.lblIDCaptura.Name = "lblIDCaptura";
+            this.lblIDCaptura.Size = new System.Drawing.Size(28, 20);
+            this.lblIDCaptura.TabIndex = 150;
+            this.lblIDCaptura.Text = "ID";
+            // 
+            // lblIdHeader
+            // 
+            this.lblIdHeader.AutoSize = true;
+            this.lblIdHeader.Location = new System.Drawing.Point(263, 102);
+            this.lblIdHeader.Name = "lblIdHeader";
+            this.lblIdHeader.Size = new System.Drawing.Size(0, 13);
+            this.lblIdHeader.TabIndex = 149;
+            this.lblIdHeader.Visible = false;
+            // 
+            // dgvAddFolios
+            // 
+            this.dgvAddFolios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvAddFolios.Location = new System.Drawing.Point(19, 125);
+            this.dgvAddFolios.Name = "dgvAddFolios";
+            this.dgvAddFolios.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvAddFolios.Size = new System.Drawing.Size(1106, 207);
+            this.dgvAddFolios.TabIndex = 148;
+            this.dgvAddFolios.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAddFolios_CellClick);
+            this.dgvAddFolios.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvAddFolios_KeyDown);
+            this.dgvAddFolios.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dgvAddFolios_KeyPress);
             // 
             // lblVersion
             // 
             this.lblVersion.AutoSize = true;
             this.lblVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblVersion.Location = new System.Drawing.Point(730, 316);
+            this.lblVersion.Location = new System.Drawing.Point(1002, 95);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(42, 20);
             this.lblVersion.TabIndex = 147;
@@ -192,34 +244,24 @@
             // 
             this.lblLibs.AutoSize = true;
             this.lblLibs.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLibs.Location = new System.Drawing.Point(351, 335);
+            this.lblLibs.Location = new System.Drawing.Point(169, 347);
             this.lblLibs.Name = "lblLibs";
             this.lblLibs.Size = new System.Drawing.Size(108, 20);
             this.lblLibs.TabIndex = 146;
             this.lblLibs.Text = "Libras netas";
             // 
-            // lblNoData
-            // 
-            this.lblNoData.AutoSize = true;
-            this.lblNoData.Font = new System.Drawing.Font("Microsoft Sans Serif", 25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNoData.Location = new System.Drawing.Point(123, 172);
-            this.lblNoData.Name = "lblNoData";
-            this.lblNoData.Size = new System.Drawing.Size(223, 39);
-            this.lblNoData.TabIndex = 145;
-            this.lblNoData.Text = "No hay Datos";
-            // 
             // pgInfoFolio
             // 
-            this.pgInfoFolio.Location = new System.Drawing.Point(121, 393);
+            this.pgInfoFolio.Location = new System.Drawing.Point(21, 417);
             this.pgInfoFolio.Name = "pgInfoFolio";
-            this.pgInfoFolio.Size = new System.Drawing.Size(237, 21);
+            this.pgInfoFolio.Size = new System.Drawing.Size(714, 21);
             this.pgInfoFolio.TabIndex = 144;
             this.pgInfoFolio.Visible = false;
             // 
             // lblLoadingInfo
             // 
             this.lblLoadingInfo.AutoSize = true;
-            this.lblLoadingInfo.Location = new System.Drawing.Point(118, 417);
+            this.lblLoadingInfo.Location = new System.Drawing.Point(18, 441);
             this.lblLoadingInfo.Name = "lblLoadingInfo";
             this.lblLoadingInfo.Size = new System.Drawing.Size(119, 13);
             this.lblLoadingInfo.TabIndex = 143;
@@ -229,7 +271,7 @@
             // btnHasConnection
             // 
             this.btnHasConnection.Image = global::ArriboEmpaque.Properties.Resources.green;
-            this.btnHasConnection.Location = new System.Drawing.Point(797, 26);
+            this.btnHasConnection.Location = new System.Drawing.Point(1104, 14);
             this.btnHasConnection.Margin = new System.Windows.Forms.Padding(2);
             this.btnHasConnection.Name = "btnHasConnection";
             this.btnHasConnection.Size = new System.Drawing.Size(18, 17);
@@ -240,8 +282,9 @@
             // btnLangCAE
             // 
             this.btnLangCAE.BackColor = System.Drawing.Color.Transparent;
+            this.btnLangCAE.ErrorImage = global::ArriboEmpaque.Properties.Resources.spanish_flag;
             this.btnLangCAE.Image = global::ArriboEmpaque.Properties.Resources.spanish_flag;
-            this.btnLangCAE.Location = new System.Drawing.Point(724, 26);
+            this.btnLangCAE.Location = new System.Drawing.Point(1031, 14);
             this.btnLangCAE.Margin = new System.Windows.Forms.Padding(2);
             this.btnLangCAE.Name = "btnLangCAE";
             this.btnLangCAE.Size = new System.Drawing.Size(48, 45);
@@ -253,7 +296,7 @@
             // btnSave
             // 
             this.btnSave.BackColor = System.Drawing.Color.Green;
-            this.btnSave.Location = new System.Drawing.Point(688, 375);
+            this.btnSave.Location = new System.Drawing.Point(1001, 415);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(127, 39);
             this.btnSave.TabIndex = 140;
@@ -264,33 +307,33 @@
             // btnCancel
             // 
             this.btnCancel.BackColor = System.Drawing.Color.Red;
-            this.btnCancel.Location = new System.Drawing.Point(524, 375);
+            this.btnCancel.Location = new System.Drawing.Point(837, 415);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(138, 39);
             this.btnCancel.TabIndex = 139;
             this.btnCancel.Text = "Cancelar";
             this.btnCancel.UseVisualStyleBackColor = false;
             // 
-            // txtLibs
+            // txtGrossLibs
             // 
-            this.txtLibs.Enabled = false;
-            this.txtLibs.Location = new System.Drawing.Point(355, 355);
-            this.txtLibs.Name = "txtLibs";
-            this.txtLibs.Size = new System.Drawing.Size(141, 20);
-            this.txtLibs.TabIndex = 138;
+            this.txtGrossLibs.Enabled = false;
+            this.txtGrossLibs.Location = new System.Drawing.Point(173, 368);
+            this.txtGrossLibs.Name = "txtGrossLibs";
+            this.txtGrossLibs.Size = new System.Drawing.Size(104, 20);
+            this.txtGrossLibs.TabIndex = 138;
             // 
             // txtBoxes
             // 
-            this.txtBoxes.Location = new System.Drawing.Point(120, 356);
+            this.txtBoxes.Location = new System.Drawing.Point(21, 368);
             this.txtBoxes.Name = "txtBoxes";
-            this.txtBoxes.Size = new System.Drawing.Size(141, 20);
+            this.txtBoxes.Size = new System.Drawing.Size(108, 20);
             this.txtBoxes.TabIndex = 136;
             // 
             // lblBoxes
             // 
             this.lblBoxes.AutoSize = true;
             this.lblBoxes.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBoxes.Location = new System.Drawing.Point(115, 335);
+            this.lblBoxes.Location = new System.Drawing.Point(16, 347);
             this.lblBoxes.Name = "lblBoxes";
             this.lblBoxes.Size = new System.Drawing.Size(54, 20);
             this.lblBoxes.TabIndex = 135;
@@ -301,7 +344,7 @@
             this.chEnableWeigth.AutoSize = true;
             this.chEnableWeigth.Cursor = System.Windows.Forms.Cursors.Default;
             this.chEnableWeigth.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chEnableWeigth.Location = new System.Drawing.Point(458, 257);
+            this.chEnableWeigth.Location = new System.Drawing.Point(868, 364);
             this.chEnableWeigth.Name = "chEnableWeigth";
             this.chEnableWeigth.Size = new System.Drawing.Size(140, 24);
             this.chEnableWeigth.TabIndex = 134;
@@ -309,11 +352,28 @@
             this.chEnableWeigth.UseVisualStyleBackColor = true;
             this.chEnableWeigth.CheckedChanged += new System.EventHandler(this.chEnableWeigth_CheckedChanged);
             // 
+            // cbTareBox
+            // 
+            this.cbTareBox.FormattingEnabled = true;
+            this.cbTareBox.Location = new System.Drawing.Point(600, 369);
+            this.cbTareBox.Name = "cbTareBox";
+            this.cbTareBox.Size = new System.Drawing.Size(228, 21);
+            this.cbTareBox.TabIndex = 133;
+            // 
+            // lblTareBox
+            // 
+            this.lblTareBox.AutoSize = true;
+            this.lblTareBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTareBox.Location = new System.Drawing.Point(596, 347);
+            this.lblTareBox.Name = "lblTareBox";
+            this.lblTareBox.Size = new System.Drawing.Size(86, 20);
+            this.lblTareBox.TabIndex = 132;
+            this.lblTareBox.Text = "Tara Caja";
+            // 
             // cbTareTarima
             // 
-            this.cbTareTarima.Enabled = false;
             this.cbTareTarima.FormattingEnabled = true;
-            this.cbTareTarima.Location = new System.Drawing.Point(458, 147);
+            this.cbTareTarima.Location = new System.Drawing.Point(328, 368);
             this.cbTareTarima.Name = "cbTareTarima";
             this.cbTareTarima.Size = new System.Drawing.Size(227, 21);
             this.cbTareTarima.TabIndex = 131;
@@ -322,11 +382,29 @@
             // 
             this.lblTareTarima.AutoSize = true;
             this.lblTareTarima.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTareTarima.Location = new System.Drawing.Point(454, 125);
+            this.lblTareTarima.Location = new System.Drawing.Point(324, 347);
             this.lblTareTarima.Name = "lblTareTarima";
             this.lblTareTarima.Size = new System.Drawing.Size(104, 20);
             this.lblTareTarima.TabIndex = 130;
             this.lblTareTarima.Text = "Tara Tarima";
+            // 
+            // lblGP
+            // 
+            this.lblGP.AutoSize = true;
+            this.lblGP.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblGP.Location = new System.Drawing.Point(116, 274);
+            this.lblGP.Name = "lblGP";
+            this.lblGP.Size = new System.Drawing.Size(0, 20);
+            this.lblGP.TabIndex = 129;
+            // 
+            // lblQuality
+            // 
+            this.lblQuality.AutoSize = true;
+            this.lblQuality.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblQuality.Location = new System.Drawing.Point(116, 246);
+            this.lblQuality.Name = "lblQuality";
+            this.lblQuality.Size = new System.Drawing.Size(0, 20);
+            this.lblQuality.TabIndex = 128;
             // 
             // lblGreenhouse
             // 
@@ -337,6 +415,15 @@
             this.lblGreenhouse.Size = new System.Drawing.Size(0, 20);
             this.lblGreenhouse.TabIndex = 127;
             // 
+            // lblPlant
+            // 
+            this.lblPlant.AutoSize = true;
+            this.lblPlant.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPlant.Location = new System.Drawing.Point(115, 187);
+            this.lblPlant.Name = "lblPlant";
+            this.lblPlant.Size = new System.Drawing.Size(0, 20);
+            this.lblPlant.TabIndex = 126;
+            // 
             // lblDate
             // 
             this.lblDate.AutoSize = true;
@@ -346,12 +433,21 @@
             this.lblDate.Size = new System.Drawing.Size(0, 20);
             this.lblDate.TabIndex = 125;
             // 
+            // lblFolioName
+            // 
+            this.lblFolioName.AutoSize = true;
+            this.lblFolioName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFolioName.Location = new System.Drawing.Point(117, 125);
+            this.lblFolioName.Name = "lblFolioName";
+            this.lblFolioName.Size = new System.Drawing.Size(0, 20);
+            this.lblFolioName.TabIndex = 124;
+            // 
             // lblCapArribo
             // 
             this.lblCapArribo.AutoSize = true;
             this.lblCapArribo.BackColor = System.Drawing.Color.Transparent;
             this.lblCapArribo.Font = new System.Drawing.Font("Tahoma", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCapArribo.Location = new System.Drawing.Point(324, 14);
+            this.lblCapArribo.Location = new System.Drawing.Point(488, 14);
             this.lblCapArribo.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCapArribo.Name = "lblCapArribo";
             this.lblCapArribo.Size = new System.Drawing.Size(154, 22);
@@ -363,7 +459,7 @@
             this.lblFolio.AutoSize = true;
             this.lblFolio.BackColor = System.Drawing.Color.Transparent;
             this.lblFolio.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold);
-            this.lblFolio.Location = new System.Drawing.Point(115, 51);
+            this.lblFolio.Location = new System.Drawing.Point(20, 67);
             this.lblFolio.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblFolio.Name = "lblFolio";
             this.lblFolio.Size = new System.Drawing.Size(48, 20);
@@ -373,12 +469,11 @@
             // txtFolio
             // 
             this.txtFolio.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFolio.Location = new System.Drawing.Point(123, 73);
+            this.txtFolio.Location = new System.Drawing.Point(22, 89);
             this.txtFolio.Margin = new System.Windows.Forms.Padding(2);
             this.txtFolio.Name = "txtFolio";
             this.txtFolio.Size = new System.Drawing.Size(227, 30);
             this.txtFolio.TabIndex = 121;
-            this.txtFolio.TextChanged += new System.EventHandler(this.txtFolio_TextChanged);
             this.txtFolio.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFolio_KeyPress);
             this.txtFolio.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtFolio_PreviewKeyDown);
             // 
@@ -389,7 +484,7 @@
             this.tabConsultaArriboEmpaque.Location = new System.Drawing.Point(4, 22);
             this.tabConsultaArriboEmpaque.Name = "tabConsultaArriboEmpaque";
             this.tabConsultaArriboEmpaque.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConsultaArriboEmpaque.Size = new System.Drawing.Size(1119, 478);
+            this.tabConsultaArriboEmpaque.Size = new System.Drawing.Size(1231, 516);
             this.tabConsultaArriboEmpaque.TabIndex = 1;
             this.tabConsultaArriboEmpaque.Text = "Consulta de Arribo Empaque";
             this.tabConsultaArriboEmpaque.UseVisualStyleBackColor = true;
@@ -406,12 +501,14 @@
             this.tlpConsult.RowCount = 2;
             this.tlpConsult.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.03131F));
             this.tlpConsult.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 84.96868F));
-            this.tlpConsult.Size = new System.Drawing.Size(1123, 479);
+            this.tlpConsult.Size = new System.Drawing.Size(1235, 517);
             this.tlpConsult.TabIndex = 0;
             // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.txtIDConsulta);
+            this.groupBox1.Controls.Add(this.lblIDConsulta);
             this.groupBox1.Controls.Add(this.txtFolioFilter);
             this.groupBox1.Controls.Add(this.btnFilter);
             this.groupBox1.Controls.Add(this.dtpDateFin);
@@ -424,21 +521,38 @@
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1117, 65);
+            this.groupBox1.Size = new System.Drawing.Size(1229, 65);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filtros";
             // 
+            // txtIDConsulta
+            // 
+            this.txtIDConsulta.Location = new System.Drawing.Point(43, 27);
+            this.txtIDConsulta.Name = "txtIDConsulta";
+            this.txtIDConsulta.Size = new System.Drawing.Size(57, 20);
+            this.txtIDConsulta.TabIndex = 124;
+            // 
+            // lblIDConsulta
+            // 
+            this.lblIDConsulta.AutoSize = true;
+            this.lblIDConsulta.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIDConsulta.Location = new System.Drawing.Point(16, 30);
+            this.lblIDConsulta.Name = "lblIDConsulta";
+            this.lblIDConsulta.Size = new System.Drawing.Size(20, 13);
+            this.lblIDConsulta.TabIndex = 123;
+            this.lblIDConsulta.Text = "ID";
+            // 
             // txtFolioFilter
             // 
-            this.txtFolioFilter.Location = new System.Drawing.Point(59, 27);
+            this.txtFolioFilter.Location = new System.Drawing.Point(149, 27);
             this.txtFolioFilter.Name = "txtFolioFilter";
             this.txtFolioFilter.Size = new System.Drawing.Size(150, 20);
             this.txtFolioFilter.TabIndex = 122;
             // 
             // btnFilter
             // 
-            this.btnFilter.Location = new System.Drawing.Point(967, 17);
+            this.btnFilter.Location = new System.Drawing.Point(1057, 17);
             this.btnFilter.Name = "btnFilter";
             this.btnFilter.Size = new System.Drawing.Size(147, 36);
             this.btnFilter.TabIndex = 121;
@@ -448,7 +562,7 @@
             // 
             // dtpDateFin
             // 
-            this.dtpDateFin.Location = new System.Drawing.Point(763, 26);
+            this.dtpDateFin.Location = new System.Drawing.Point(853, 26);
             this.dtpDateFin.Name = "dtpDateFin";
             this.dtpDateFin.Size = new System.Drawing.Size(195, 20);
             this.dtpDateFin.TabIndex = 120;
@@ -457,7 +571,7 @@
             // 
             this.lblDateFin.AutoSize = true;
             this.lblDateFin.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDateFin.Location = new System.Drawing.Point(701, 30);
+            this.lblDateFin.Location = new System.Drawing.Point(791, 30);
             this.lblDateFin.Name = "lblDateFin";
             this.lblDateFin.Size = new System.Drawing.Size(60, 13);
             this.lblDateFin.TabIndex = 119;
@@ -465,7 +579,7 @@
             // 
             // dtpDateIni
             // 
-            this.dtpDateIni.Location = new System.Drawing.Point(497, 26);
+            this.dtpDateIni.Location = new System.Drawing.Point(587, 26);
             this.dtpDateIni.Name = "dtpDateIni";
             this.dtpDateIni.Size = new System.Drawing.Size(197, 20);
             this.dtpDateIni.TabIndex = 118;
@@ -474,7 +588,7 @@
             // 
             this.lblDateIni.AutoSize = true;
             this.lblDateIni.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDateIni.Location = new System.Drawing.Point(420, 30);
+            this.lblDateIni.Location = new System.Drawing.Point(510, 30);
             this.lblDateIni.Name = "lblDateIni";
             this.lblDateIni.Size = new System.Drawing.Size(76, 13);
             this.lblDateIni.TabIndex = 4;
@@ -484,7 +598,7 @@
             // 
             this.lblFolioFilter.AutoSize = true;
             this.lblFolioFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFolioFilter.Location = new System.Drawing.Point(24, 30);
+            this.lblFolioFilter.Location = new System.Drawing.Point(114, 30);
             this.lblFolioFilter.Name = "lblFolioFilter";
             this.lblFolioFilter.Size = new System.Drawing.Size(34, 13);
             this.lblFolioFilter.TabIndex = 2;
@@ -493,7 +607,7 @@
             // cbPlants
             // 
             this.cbPlants.FormattingEnabled = true;
-            this.cbPlants.Location = new System.Drawing.Point(267, 26);
+            this.cbPlants.Location = new System.Drawing.Point(357, 26);
             this.cbPlants.Name = "cbPlants";
             this.cbPlants.Size = new System.Drawing.Size(149, 21);
             this.cbPlants.TabIndex = 1;
@@ -502,7 +616,7 @@
             // 
             this.lblPlantFilter.AutoSize = true;
             this.lblPlantFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPlantFilter.Location = new System.Drawing.Point(223, 30);
+            this.lblPlantFilter.Location = new System.Drawing.Point(313, 30);
             this.lblPlantFilter.Name = "lblPlantFilter";
             this.lblPlantFilter.Size = new System.Drawing.Size(43, 13);
             this.lblPlantFilter.TabIndex = 0;
@@ -512,9 +626,9 @@
             // 
             this.dgvFolios.BackgroundColor = System.Drawing.SystemColors.Info;
             this.dgvFolios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvFolios.Location = new System.Drawing.Point(3, 74);
+            this.dgvFolios.Location = new System.Drawing.Point(3, 80);
             this.dgvFolios.Name = "dgvFolios";
-            this.dgvFolios.Size = new System.Drawing.Size(1117, 402);
+            this.dgvFolios.Size = new System.Drawing.Size(1229, 433);
             this.dgvFolios.TabIndex = 1;
             // 
             // backgroundWorkerFindFolio
@@ -536,7 +650,7 @@
             // lblLoadingFolios
             // 
             this.lblLoadingFolios.AutoSize = true;
-            this.lblLoadingFolios.Location = new System.Drawing.Point(1, 536);
+            this.lblLoadingFolios.Location = new System.Drawing.Point(1, 580);
             this.lblLoadingFolios.Name = "lblLoadingFolios";
             this.lblLoadingFolios.Size = new System.Drawing.Size(120, 13);
             this.lblLoadingFolios.TabIndex = 2;
@@ -545,7 +659,7 @@
             // 
             // pbFolios
             // 
-            this.pbFolios.Location = new System.Drawing.Point(122, 533);
+            this.pbFolios.Location = new System.Drawing.Point(122, 577);
             this.pbFolios.Name = "pbFolios";
             this.pbFolios.Size = new System.Drawing.Size(477, 18);
             this.pbFolios.TabIndex = 3;
@@ -554,7 +668,7 @@
             // lblReady
             // 
             this.lblReady.AutoSize = true;
-            this.lblReady.Location = new System.Drawing.Point(1085, 536);
+            this.lblReady.Location = new System.Drawing.Point(1203, 582);
             this.lblReady.Name = "lblReady";
             this.lblReady.Size = new System.Drawing.Size(32, 13);
             this.lblReady.TabIndex = 4;
@@ -564,73 +678,22 @@
             // lblTotalRecords
             // 
             this.lblTotalRecords.AutoSize = true;
-            this.lblTotalRecords.Location = new System.Drawing.Point(766, 535);
+            this.lblTotalRecords.Location = new System.Drawing.Point(936, 582);
             this.lblTotalRecords.Name = "lblTotalRecords";
             this.lblTotalRecords.Size = new System.Drawing.Size(88, 13);
             this.lblTotalRecords.TabIndex = 5;
             this.lblTotalRecords.Text = "Registros totales:";
             this.lblTotalRecords.Visible = false;
             // 
-            // lblPlant
+            // backgroundWorkerGetFoliosByID
             // 
-            this.lblPlant.AutoSize = true;
-            this.lblPlant.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPlant.Location = new System.Drawing.Point(115, 187);
-            this.lblPlant.Name = "lblPlant";
-            this.lblPlant.Size = new System.Drawing.Size(0, 20);
-            this.lblPlant.TabIndex = 126;
-            // 
-            // lblGP
-            // 
-            this.lblGP.AutoSize = true;
-            this.lblGP.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblGP.Location = new System.Drawing.Point(116, 274);
-            this.lblGP.Name = "lblGP";
-            this.lblGP.Size = new System.Drawing.Size(0, 20);
-            this.lblGP.TabIndex = 129;
-            // 
-            // lblQuality
-            // 
-            this.lblQuality.AutoSize = true;
-            this.lblQuality.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblQuality.Location = new System.Drawing.Point(116, 246);
-            this.lblQuality.Name = "lblQuality";
-            this.lblQuality.Size = new System.Drawing.Size(0, 20);
-            this.lblQuality.TabIndex = 128;
-            // 
-            // lblFolioName
-            // 
-            this.lblFolioName.AutoSize = true;
-            this.lblFolioName.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFolioName.Location = new System.Drawing.Point(117, 125);
-            this.lblFolioName.Name = "lblFolioName";
-            this.lblFolioName.Size = new System.Drawing.Size(0, 20);
-            this.lblFolioName.TabIndex = 124;
-            // 
-            // lblTareBox
-            // 
-            this.lblTareBox.AutoSize = true;
-            this.lblTareBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTareBox.Location = new System.Drawing.Point(454, 188);
-            this.lblTareBox.Name = "lblTareBox";
-            this.lblTareBox.Size = new System.Drawing.Size(86, 20);
-            this.lblTareBox.TabIndex = 132;
-            this.lblTareBox.Text = "Tara Caja";
-            // 
-            // cbTareBox
-            // 
-            this.cbTareBox.Enabled = false;
-            this.cbTareBox.FormattingEnabled = true;
-            this.cbTareBox.Location = new System.Drawing.Point(458, 209);
-            this.cbTareBox.Name = "cbTareBox";
-            this.cbTareBox.Size = new System.Drawing.Size(228, 21);
-            this.cbTareBox.TabIndex = 133;
+            this.backgroundWorkerGetFoliosByID.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerGetFoliosByID_DoWork);
             // 
             // frmCapturaArriboEmpaque
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1127, 555);
+            this.ClientSize = new System.Drawing.Size(1270, 602);
             this.Controls.Add(this.lblTotalRecords);
             this.Controls.Add(this.lblReady);
             this.Controls.Add(this.pbFolios);
@@ -647,6 +710,7 @@
             this.tabCapturaArriboEmpaque.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvAddFolios)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnHasConnection)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnLangCAE)).EndInit();
             this.tabConsultaArriboEmpaque.ResumeLayout(false);
@@ -674,7 +738,7 @@
         private System.Windows.Forms.Label lblCapArribo;
         private System.Windows.Forms.Label lblFolio;
         private System.Windows.Forms.TextBox txtFolio;
-        private System.Windows.Forms.TextBox txtLibs;
+        private System.Windows.Forms.TextBox txtGrossLibs;
         private System.Windows.Forms.TextBox txtBoxes;
         private System.Windows.Forms.Label lblBoxes;
         private System.Windows.Forms.CheckBox chEnableWeigth;
@@ -687,7 +751,6 @@
         private System.Windows.Forms.ProgressBar pgInfoFolio;
         private System.Windows.Forms.Label lblLoadingInfo;
         private System.Windows.Forms.Label lblLibs;
-        private System.Windows.Forms.Label lblNoData;
         private System.Windows.Forms.TableLayoutPanel tlpConsult;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ToolStripMenuItem salirToolStripMenuItem;
@@ -714,5 +777,12 @@
         private System.Windows.Forms.Label lblQuality;
         private System.Windows.Forms.Label lblPlant;
         private System.Windows.Forms.Label lblFolioName;
+        private System.Windows.Forms.DataGridView dgvAddFolios;
+        private System.Windows.Forms.Label lblIdHeader;
+        private System.Windows.Forms.TextBox txtIDConsulta;
+        private System.Windows.Forms.Label lblIDConsulta;
+        private System.Windows.Forms.TextBox txtIDCaptura;
+        private System.Windows.Forms.Label lblIDCaptura;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerGetFoliosByID;
     }
 }

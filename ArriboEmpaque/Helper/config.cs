@@ -12,8 +12,8 @@ namespace arrivov2.helper {
 
     class config {
 
-        public static String pathWS = "http://planning.naturesweet.com/wspackwedge/WSArriboService.asmx";
-        //public static String pathWS = "http://192.168.167.8:289/WSArriboService.asmx/";
+        //public static String pathWS = "http://planning.naturesweet.com/wspackwedge/WSArriboService.asmx";
+        public static String pathWS = "http://192.168.167.8:289/WSArriboService.asmx/";
         public static String webMethodLogin                      = "Login";
         public static String webMethodDescargarComprobarConexion = "testCon";
         public static String webMethodGetInfoFolio = "getInfoFolio";
@@ -21,6 +21,7 @@ namespace arrivov2.helper {
         public static String webMethodPingWS = "pingToWS";
         public static String webMethodGetFolios = "getFolios";
         public static String webMethodGetPlants = "getPlants";
+        public static String webMethodGetFoliosByID = "getInfoFoliosByID";
 
 
 

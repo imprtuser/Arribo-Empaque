@@ -148,7 +148,7 @@
     <value>Iniciar Sesión</value>
   </data>
   <data name="librasNetas" xml:space="preserve">
-    <value>Libras netas</value>
+    <value>Libras Gross</value>
   </data>
   <data name="noData" xml:space="preserve">
     <value>No hay Datos</value>

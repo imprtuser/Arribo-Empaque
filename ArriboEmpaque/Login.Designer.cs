@@ -75,6 +75,7 @@
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(296, 30);
             this.txtPassword.TabIndex = 20;
+            this.txtPassword.Text = "Enero1992";
             // 
             // txtUser
             // 
@@ -84,6 +85,7 @@
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(296, 30);
             this.txtUser.TabIndex = 19;
+            this.txtUser.Text = "cbaltazar";
             // 
             // btnLogin
             // 
