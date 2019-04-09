@@ -13,6 +13,7 @@ namespace ArriboEmpaque.Classes
         public decimal dGrossLibs { get; set; }
         public int idTarePlant { get; set; }
         public int idTareBox { get; set; }
+        public String userCreated { get; set; }
 
         public String toXML()
         {
@@ -23,6 +24,7 @@ namespace ArriboEmpaque.Classes
                           "<dGrossLibs>" + dGrossLibs + "</dGrossLibs>" +
                           "<idTarePlant>" + idTarePlant + "</idTarePlant>" +
                           "<idTareBox>" + idTareBox + "</idTareBox>" +
+                          "<userCreated>" + userCreated + "</userCreated>" +
                      "</FolioHeader>" +
                  "</data>";
         }

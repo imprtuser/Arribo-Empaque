@@ -20,12 +20,15 @@ namespace ArriboEmpaque
 {
     public partial class frmLogin : Form
     {
-        Boolean english = false;
-        CultureInfo culture;
-        ResourceManager resourceManager;
+        private Boolean english = false;
+        private CultureInfo culture;
+        private ResourceManager resourceManager;
+        private Database database = new Database();
+        public static String userSession = String.Empty;
         public frmLogin()
         {
             InitializeComponent();
+            createLocalDB();
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
@@ -47,7 +50,7 @@ namespace ArriboEmpaque
                 int response = 0;
                 Boolean userLogged = false;
                 const String contentType = "application/x-www-form-urlencoded";
-                var url = config.pathWS + "/" +  config.webMethodLogin;
+                var url = config.pathWS + "/" + config.webMethodLogin;
                 String postString = String.Format("user={0}&password={1}", vUser, vPassword);
 
                 CookieContainer cookies = new CookieContainer();
@@ -72,7 +75,7 @@ namespace ArriboEmpaque
                 if (dt.Rows.Count > 0)
                 {
                     response = Convert.ToInt32(dt.Rows[0]["responseType"].ToString());
-                    if(response == 1)
+                    if (response == 1)
                     {
                         userLogged = true;
                     }
@@ -138,23 +141,23 @@ namespace ArriboEmpaque
         {
             LoginResponse loginResponse = new LoginResponse();
             UserLogin oUser = new UserLogin();
-            
+
             oUser.userName = txtUser.Text.ToString().Trim();
             oUser.password = txtPassword.Text.ToString().Trim();
 
-        
-                if (Login(oUser.userName, oUser.password))
-                {
-                    loginResponse.loginSuccess = true;
-                }
+            if (Login(oUser.userName, oUser.password))
+            {
+                userSession = oUser.userName;
+                loginResponse.loginSuccess = true;
+            }
 
-                else
-                {
-                    loginResponse.loginSuccess = false;
-                    loginResponse.message = "Usuario o contraseña incorrectos";
-                }
+            else
+            {
+                loginResponse.loginSuccess = false;
+                loginResponse.message = "Usuario o contraseña incorrectos";
+            }
 
-                e.Result = loginResponse;
+            e.Result = loginResponse;
 
         }
 
@@ -202,6 +205,43 @@ namespace ArriboEmpaque
             else if (result == DialogResult.No)
             {
                 e.Cancel = true;
+            }
+        }
+
+        public void createLocalDB()
+        {
+
+            if (!database.checkDBExists())
+            {
+                lblLoginLoading.Show();
+                pgLogin.Show();
+                pgLogin.Value = 50;
+                try
+                {
+                    database.createDatabase();
+                    lblLoginLoading.Hide();
+                    pgLogin.Value = 100;
+                    pgLogin.Hide();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
+        private void txtPassword_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((int)e.KeyChar == (int)Keys.Enter)
+            {
+                btnLogin.Enabled = false;
+                txtUser.Enabled = false;
+                txtPassword.Enabled = false;
+                pgLogin.Show();
+                pgLogin.Value = 50;
+                lblLoginLoading.Show();
+                lblLoginLoading.Text = "Cargando...";
+                backgroundWorkerLogin.RunWorkerAsync();
             }
         }
     }

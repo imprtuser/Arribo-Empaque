@@ -32,6 +32,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configuracionesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.puertoBasculaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tbControl = new System.Windows.Forms.TabControl();
             this.tabCapturaArriboEmpaque = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -105,7 +107,8 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.archivoToolStripMenuItem});
+            this.archivoToolStripMenuItem,
+            this.configuracionesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1270, 24);
@@ -126,6 +129,21 @@
             this.salirToolStripMenuItem.Size = new System.Drawing.Size(96, 22);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
+            // 
+            // configuracionesToolStripMenuItem
+            // 
+            this.configuracionesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.puertoBasculaToolStripMenuItem});
+            this.configuracionesToolStripMenuItem.Name = "configuracionesToolStripMenuItem";
+            this.configuracionesToolStripMenuItem.Size = new System.Drawing.Size(106, 20);
+            this.configuracionesToolStripMenuItem.Text = "Configuraciones";
+            // 
+            // puertoBasculaToolStripMenuItem
+            // 
+            this.puertoBasculaToolStripMenuItem.Name = "puertoBasculaToolStripMenuItem";
+            this.puertoBasculaToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.puertoBasculaToolStripMenuItem.Text = "Puerto Bascula";
+            this.puertoBasculaToolStripMenuItem.Click += new System.EventHandler(this.puertoBasculaToolStripMenuItem_Click);
             // 
             // tbControl
             // 
@@ -227,8 +245,7 @@
             this.dgvAddFolios.Size = new System.Drawing.Size(1106, 207);
             this.dgvAddFolios.TabIndex = 148;
             this.dgvAddFolios.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAddFolios_CellClick);
-            this.dgvAddFolios.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvAddFolios_KeyDown);
-            this.dgvAddFolios.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.dgvAddFolios_KeyPress);
+            this.dgvAddFolios.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvAddFolios_EditingControlShowing);
             // 
             // lblVersion
             // 
@@ -313,6 +330,7 @@
             this.btnCancel.TabIndex = 139;
             this.btnCancel.Text = "Cancelar";
             this.btnCancel.UseVisualStyleBackColor = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // txtGrossLibs
             // 
@@ -532,6 +550,7 @@
             this.txtIDConsulta.Name = "txtIDConsulta";
             this.txtIDConsulta.Size = new System.Drawing.Size(57, 20);
             this.txtIDConsulta.TabIndex = 124;
+            this.txtIDConsulta.Visible = false;
             // 
             // lblIDConsulta
             // 
@@ -542,6 +561,7 @@
             this.lblIDConsulta.Size = new System.Drawing.Size(20, 13);
             this.lblIDConsulta.TabIndex = 123;
             this.lblIDConsulta.Text = "ID";
+            this.lblIDConsulta.Visible = false;
             // 
             // txtFolioFilter
             // 
@@ -784,5 +804,7 @@
         private System.Windows.Forms.TextBox txtIDCaptura;
         private System.Windows.Forms.Label lblIDCaptura;
         private System.ComponentModel.BackgroundWorker backgroundWorkerGetFoliosByID;
+        private System.Windows.Forms.ToolStripMenuItem configuracionesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem puertoBasculaToolStripMenuItem;
     }
 }

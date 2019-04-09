@@ -10,12 +10,14 @@ namespace ArriboEmpaque.Classes
     {
         public int idWnW { get; set; }
         public int iBoxes { get; set; }
+        public String userCreated { get; set; }
 
         public String toXML()
         {
             return "<FolioDetail>" +
                           "<idWnW>" + idWnW + "</idWnW>" +
                           "<iBoxes>" + iBoxes + "</iBoxes>" +
+                          "<userCreated>" + userCreated + "</userCreated>" +
                  "</FolioDetail>";
         }
     }
