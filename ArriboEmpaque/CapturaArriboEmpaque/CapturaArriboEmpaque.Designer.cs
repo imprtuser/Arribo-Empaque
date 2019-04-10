@@ -245,7 +245,6 @@
             this.dgvAddFolios.Size = new System.Drawing.Size(1106, 207);
             this.dgvAddFolios.TabIndex = 148;
             this.dgvAddFolios.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvAddFolios_CellClick);
-            this.dgvAddFolios.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvAddFolios_EditingControlShowing);
             // 
             // lblVersion
             // 
@@ -550,7 +549,6 @@
             this.txtIDConsulta.Name = "txtIDConsulta";
             this.txtIDConsulta.Size = new System.Drawing.Size(57, 20);
             this.txtIDConsulta.TabIndex = 124;
-            this.txtIDConsulta.Visible = false;
             // 
             // lblIDConsulta
             // 
@@ -561,7 +559,6 @@
             this.lblIDConsulta.Size = new System.Drawing.Size(20, 13);
             this.lblIDConsulta.TabIndex = 123;
             this.lblIDConsulta.Text = "ID";
-            this.lblIDConsulta.Visible = false;
             // 
             // txtFolioFilter
             // 

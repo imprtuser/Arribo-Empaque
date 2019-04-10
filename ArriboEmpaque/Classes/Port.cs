@@ -101,7 +101,7 @@ namespace ArriboEmpaque.Classes
             String port = "";
             SQLiteConnection con = database.openConnection();
 
-            String sql = "SELECT idPort, vPortName, bActive WHERE bActive = 1";
+            String sql = "SELECT idPort, vPortName, bActive FROM tblPorts WHERE bActive = 1";
 
             SQLiteDataReader read = database.executeSQLReader(sql, con);
             using (SQLiteDataReader r = read)

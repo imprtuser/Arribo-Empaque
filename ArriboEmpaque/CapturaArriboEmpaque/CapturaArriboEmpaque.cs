@@ -18,11 +18,13 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using Microsoft.VisualBasic;
 
 namespace ArriboEmpaque.CapturaArriboEmpaque
 {
     public partial class frmCapturaArriboEmpaque : Form
     {
+        //Variables globales
         private Boolean english = false;
         private ResourceManager resourceManager;
         private CultureInfo culture;
@@ -32,14 +34,16 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         private Folio _Folio;
         private String folio;
         private int idPlant;
+        private int idFolioHeader;
         private String dateIni;
         private String dateFin;
         private DataTable dtFolios;
         private DataTable dtTaresPallet;
         private DataTable dtTaresBox;
-        public static String userSession = String.Empty;
         private SerialPort oSerialPort;
         private Port port;
+        public static String userSession = String.Empty;
+        private int currentValueCajas = 0;
 
         public frmCapturaArriboEmpaque()
         {
@@ -77,10 +81,10 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             this.folio = null;
             this.dateIni = null;
             this.dateFin = null;
+            this.idFolioHeader = 0;
 
             userSession = frmLogin.userSession;
-            KeyPreview = true;
-            // initializePortWeighingMachine();
+            initializePortWeighingMachine();
         }
 
         private void btnLangCAE_Click(object sender, EventArgs e)
@@ -93,10 +97,10 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             try
             {
+                cbTareTarima.DataSource = null;
                 cbTareTarima.DataSource = dtTaresPallet;
                 cbTareTarima.ValueMember = "ID";
                 cbTareTarima.DisplayMember = "Name";
-                //cbTareTarima.SelectedValue = idTarePallet;
             }
             catch (Exception ex)
             {
@@ -108,14 +112,13 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             try
             {
+                cbTareBox.DataSource = null;
                 cbTareBox.DataSource = dtTaresBox;
                 cbTareBox.ValueMember = "ID";
                 cbTareBox.DisplayMember = "Name";
-                // cbTareBox.SelectedValue = idTarePlantCaja;
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -131,7 +134,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             lblLibs.Text = resourceManager.GetString("librasNetas", culture);
             btnCancel.Text = resourceManager.GetString("cancelar", culture);
             btnSave.Text = resourceManager.GetString("guardar", culture);
-            //lblNoData.Text = resourceManager.GetString("noData", culture);
         }
 
         protected void changeLanguage()
@@ -222,8 +224,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             try
             {
-                //lblNoData.Hide();
-
                 lblFolioName.Text = _Folio.folioCode;
                 lblDate.Text = String.Format("Fecha: {0}", _Folio.vDate);
                 lblPlant.Text = _Folio.vPlant;
@@ -262,7 +262,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             try
             {
-
                 DataTable dt = dsInfo.Tables[0];
                 ResponseType res = new ResponseType();
 
@@ -297,7 +296,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         _Folio.idTarePlantPallet = Convert.ToInt32(dtFolio.Rows[0]["idTarePlantPallet"].ToString());
                         _Folio.idTarePlantCaja = Convert.ToInt32(dtFolio.Rows[0]["idTarePlantCaja"].ToString());
 
-                        //setValues(_Folio);
                         loadTaresBox(dtTaresBox);
                         loadTaresPallet(dtTaresPallet);
 
@@ -406,8 +404,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dgvAddFolios.AllowUserToDeleteRows = false;
             dgvAddFolios.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-
-
             dgvAddFolios.RowsDefaultCellStyle.BackColor = Color.Bisque;
             dgvAddFolios.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige;
             dgvAddFolios.CellBorderStyle = DataGridViewCellBorderStyle.None;
@@ -416,11 +412,8 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dgvAddFolios.DefaultCellStyle.SelectionForeColor = Color.White;
             dgvAddFolios.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             dgvAddFolios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            //dgvAddFolios.EditMode = DataGridViewEditMode.EditProgrammatically;
             dgvAddFolios.AllowUserToResizeColumns = false;
-            dgvAddFolios.AllowUserToAddRows = false;
-            dgvAddFolios.AllowUserToDeleteRows = false;
-            dgvAddFolios.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvAddFolios.RowTemplate.Height = 30;
 
             DataGridViewTextBoxColumn idWnWCol = new DataGridViewTextBoxColumn();
             idWnWCol.HeaderText = "idWnW";
@@ -430,6 +423,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             idWnWCol.ReadOnly = true;
             idWnWCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             idWnWCol.Visible = false;
+            idWnWCol.Width = 50;
             dgvAddFolios.Columns.Add(idWnWCol);
             dgvAddFolios.Columns[0].HeaderCell.Style.Font = font;
 
@@ -439,6 +433,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             folioCol.Name = "Folio";
             folioCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             folioCol.ReadOnly = true;
+            folioCol.Width = 50;
             folioCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(folioCol);
             dgvAddFolios.Columns[1].HeaderCell.Style.Font = font;
@@ -449,6 +444,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             GHCol.Name = "Invernadero";
             GHCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             GHCol.ReadOnly = true;
+            GHCol.Width = 50;
             GHCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(GHCol);
             dgvAddFolios.Columns[2].HeaderCell.Style.Font = font;
@@ -459,6 +455,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             productCol.Name = "Producto";
             productCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             productCol.ReadOnly = true;
+            productCol.Width = 50;
             productCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(productCol);
             dgvAddFolios.Columns[3].HeaderCell.Style.Font = font;
@@ -469,6 +466,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             plantCol.Name = "Planta";
             plantCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             plantCol.ReadOnly = true;
+            plantCol.Width = 50;
             plantCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(plantCol);
             dgvAddFolios.Columns[4].HeaderCell.Style.Font = font;
@@ -479,6 +477,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             qualityCol.Name = "Calidad";
             qualityCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             qualityCol.ReadOnly = true;
+            qualityCol.Width = 50;
             qualityCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(qualityCol);
             dgvAddFolios.Columns[5].HeaderCell.Style.Font = font;
@@ -489,6 +488,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             GPCol.Name = "GP";
             GPCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             GPCol.ReadOnly = true;
+            GPCol.Width = 50;
             GPCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(GPCol);
             dgvAddFolios.Columns[6].HeaderCell.Style.Font = font;
@@ -499,6 +499,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             netCol.Name = "dNet";
             netCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             netCol.ReadOnly = true;
+            netCol.Width = 50;
             netCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(netCol);
             dgvAddFolios.Columns[7].HeaderCell.Style.Font = font;
@@ -509,6 +510,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             tareBoxCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             tareBoxCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             tareBoxCol.ReadOnly = true;
+            tareBoxCol.Width = 50;
             dgvAddFolios.Columns.Add(tareBoxCol);
             dgvAddFolios.Columns[8].HeaderCell.Style.Font = font;
 
@@ -520,6 +522,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             idTareBox.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             idTareBox.ReadOnly = true;
             idTareBox.Visible = false;
+            idTareBox.Width = 50;
             dgvAddFolios.Columns.Add(idTareBox);
             dgvAddFolios.Columns[9].HeaderCell.Style.Font = font;
 
@@ -528,7 +531,8 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             boxesCol.DataPropertyName = "iBoxes";
             boxesCol.Name = "Cajas";
             boxesCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            boxesCol.ReadOnly = false;
+            boxesCol.ReadOnly = true;
+            boxesCol.Width = 50;
             boxesCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(boxesCol);
             dgvAddFolios.Columns[10].HeaderCell.Style.Font = font;
@@ -537,11 +541,21 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dateCol.HeaderText = "Fecha Arribo";
             dateCol.DataPropertyName = "Fecha";
             dateCol.Name = "FechaArribo";
+            dateCol.Width = 50;
             dateCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dateCol.ReadOnly = true;
             dateCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(dateCol);
             dgvAddFolios.Columns[11].HeaderCell.Style.Font = font;
+
+            DataGridViewImageColumn EditCol = new DataGridViewImageColumn();
+            EditCol.Width = 50;
+            EditCol.Image = global::ArriboEmpaque.Properties.Resources.edit;
+            EditCol.HeaderText = "Editar";
+            EditCol.Name = "delete";
+            EditCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvAddFolios.Columns.Add(EditCol);
+            dgvAddFolios.Columns[12].HeaderCell.Style.Font = font;
 
             DataGridViewImageColumn DeleteCol = new DataGridViewImageColumn();
             DeleteCol.Width = 50;
@@ -550,7 +564,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             DeleteCol.Name = "delete";
             DeleteCol.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dgvAddFolios.Columns.Add(DeleteCol);
-            dgvAddFolios.Columns[12].HeaderCell.Style.Font = font;
+            dgvAddFolios.Columns[13].HeaderCell.Style.Font = font;
 
 
         }
@@ -612,7 +626,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 var url = config.pathWS + "/" + config.webMethodSaveInfoFolio;
                 Boolean savedFolio = false;
 
-                //String xmlFolioObject = _Folio.toXML();
                 String xmlFoliosHeader = generateXMLFoliosHeader();
                 String xmlFoliosDetails = generateXMLFoliosDetails();
                 String postString = String.Format("xmlFoliosHeader={0}&xmlFoliosDetails={1}", xmlFoliosHeader, xmlFoliosDetails);
@@ -667,14 +680,14 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 txtFolio.Text = String.Empty;
                 txtIDCaptura.Enabled = true;
                 txtBoxes.Enabled = true;
-                txtBoxes.Text = String.Empty;
+                //txtBoxes.Text = String.Empty;
                 txtGrossLibs.Enabled = false;
-                txtGrossLibs.Text = String.Empty;
-                cbTareBox.DataSource = null;
-                cbTareTarima.DataSource = null;
+                //txtGrossLibs.Text = String.Empty;
+                //cbTareBox.DataSource = null;
+                //cbTareTarima.DataSource = null;
                 cbTareBox.Enabled = true;
                 cbTareTarima.Enabled = true;
-                dgvAddFolios.Rows.Clear();
+                //dgvAddFolios.Rows.Clear();
                 lblIdHeader.Text = "0";
             }
             else
@@ -763,25 +776,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-
-        protected void cleanForm()
-        {
-
-            //lblFolioName.Text = String.Empty;
-            //lblDate.Text = String.Empty;
-            //lblPlant.Text = String.Empty;
-            //lblGreenhouse.Text = String.Empty;
-            //lblQuality.Text = String.Empty;
-            //lblGP.Text = String.Empty;
-
-            //txtBoxes.Text = String.Empty;
-            //txtLibs.Text = String.Empty;
-            //txtFolio.Text = String.Empty;
-            //txtIDCaptura.Text = String.Empty;
-            //txtLibs.Text = String.Empty;
-            //lblNoData.Show();
-        }
-
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -823,13 +817,13 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-        protected DataSet getFolios(int idPlant, String folio, String dateIni, String dateFin)
+        protected DataSet getFolios(int idPlant, String folio, String dateIni, String dateFin, int idFolioHeader)
         {
             try
             {
                 const String contentType = "application/x-www-form-urlencoded";
                 var url = config.pathWS + "/" + config.webMethodGetFolios;
-                String postString = String.Format("idPlant={0}&folio={1}&dateIni={2}&dateFin={3}", idPlant, folio, dateIni, dateFin);
+                String postString = String.Format("idPlant={0}&folio={1}&dateIni={2}&dateFin={3}&idFolioHeader={4}", idPlant, folio, dateIni, dateFin, idFolioHeader);
 
                 CookieContainer cookies = new CookieContainer();
                 HttpWebRequest webRequest = WebRequest.Create(url) as HttpWebRequest;
@@ -902,7 +896,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             dateIni = dtpDateIni.Value.Date.ToString("yyyy-MM-dd");
             dateFin = dtpDateFin.Value.Date.ToString("yyyy-MM-dd");
-            dsFolios = getFolios(idPlant, folio, dateIni, dateFin);
+            dsFolios = getFolios(idPlant, folio, dateIni, dateFin, idFolioHeader);
         }
 
         private void backgroundWorkerGetFolios_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -941,6 +935,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             folio = txtFolioFilter.Text.ToString();
             idPlant = Convert.ToInt32(cbPlants.SelectedValue);
+            idFolioHeader = Convert.ToInt32(txtIDConsulta.Text.ToString());
             pbFolios.Show();
             pbFolios.Value = 50;
             lblLoadingFolios.Show();
@@ -1006,9 +1001,26 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
         private void dgvAddFolios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == 12)
+            if(e.ColumnIndex == 12)
+            {
+                currentValueCajas = Convert.ToInt32(dgvAddFolios.Rows[e.RowIndex].Cells[10].Value.ToString());
+                String folio = dgvAddFolios.Rows[e.RowIndex].Cells[1].Value.ToString();
+                String newValue = Microsoft.VisualBasic.Interaction.InputBox("Ingrese nuevo valor de cajas", "Edición de cajas para folio" + " " + folio , currentValueCajas.ToString());
+                if (!String.IsNullOrEmpty(newValue))
+                {
+                    setNewValueCajas(e.RowIndex, Convert.ToInt32(newValue));
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            if (e.ColumnIndex == 13)
             {
                 int sumBoxes = 0;
+                int sumLibs = 0;
+
                 DialogResult result = MessageBox.Show("¿Está seguro que desea salir eliminar el folio?", "Captura Arribo Empaque", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (result == DialogResult.OK)
                 {
@@ -1017,17 +1029,17 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         dgvAddFolios.Rows.RemoveAt(row.Index);
                     }
 
-                    if (Convert.ToInt32(lblIdHeader.Text.ToString()) == 0)
+                    if (Convert.ToInt32(lblIdHeader.Text.ToString()) > 0)
                     {
                         foreach (DataGridViewRow row in dgvAddFolios.Rows)
                         {
                             sumBoxes += Convert.ToInt32(row.Cells[10].Value.ToString());
+                            sumLibs += Convert.ToInt32(row.Cells[7].Value.ToString());
                         }
 
                         txtBoxes.Text = sumBoxes.ToString();
+                        txtGrossLibs.Text = sumLibs.ToString();
                     }
-
-
                     txtFolio.Text = String.Empty;
                 }
             }
@@ -1369,48 +1381,32 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             frmConfigPort.Show();
         }
 
-        private void dgvAddFolios_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        protected void setNewValueCajas(int rIndex, int newValueCajas)
         {
-            //TextBox tb = (TextBox)e.Control;
-            //tb.PreviewKeyDown += new PreviewKeyDownEventHandler(dataGridViewTextBox_PreviewKeyDown);
-            //tb.KeyDown += new KeyEventHandler(dataGridViewTextBox_KeyDown);
-            e.Control.KeyPress += new KeyPressEventHandler(dataGridViewTextBox_KeyPress);
-
-        }
-
-        private void dataGridViewTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-           if (e.KeyChar == (int)Keys.Tab)
+            if (newValueCajas > 0)
             {
-                MessageBox.Show("jala", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void dataGridViewTextBox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter && dgvAddFolios.CurrentCell.ColumnIndex == 10)
-            {
-                MessageBox.Show("putos", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void dataGridViewTextBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                int indexRow = dgvAddFolios.CurrentCell.RowIndex;
-                int totalBoxes = Convert.ToInt32(txtBoxes.Text);
-                int folioBoxesCell = Convert.ToInt32(dgvAddFolios.Rows[indexRow].Cells[10].Value);
-
-                if (folioBoxesCell > 0)
+                int total = 0;
+                if (dgvFolios.Rows.Count > 1)
                 {
-                    txtBoxes.Text = (totalBoxes + folioBoxesCell).ToString();
+                    dgvAddFolios.Rows[rIndex].Cells[10].Value = newValueCajas;
+                    total = newValueCajas;
+                    txtBoxes.Text = total.ToString();
                 }
                 else
                 {
-                    MessageBox.Show("El valor de las cajas no debe ser 0", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgvAddFolios.Rows[rIndex].Cells[10].Value = newValueCajas;
+                    for (int i = 0; i < dgvAddFolios.Rows.Count; i++)
+                    {
+                        total += Convert.ToInt32(dgvAddFolios.Rows[i].Cells[10].Value.ToString());
+                    }
+                    txtBoxes.Text = total.ToString();
                 }
             }
+            else
+            {
+                MessageBox.Show("El valor del cajas del folio debe ser mayor a 0", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            
         }
     }
 }

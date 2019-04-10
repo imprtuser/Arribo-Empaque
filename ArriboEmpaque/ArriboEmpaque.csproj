@@ -71,6 +71,7 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -165,6 +166,7 @@
   <ItemGroup>
     <Content Include="Resources\background-planning.png" />
     <Content Include="Resources\delete.png" />
+    <Content Include="Resources\edit.png" />
     <Content Include="Resources\english_flag.png" />
     <Content Include="Resources\green.png" />
     <Content Include="Resources\logo.png" />
