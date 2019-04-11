@@ -83,7 +83,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             this.dateIni = null;
             this.dateFin = null;
             this.idFolioHeader = 0;
-            txtBoxes.Enabled = false;
+            txtBoxes.Enabled = true;
             txtGrossLibs.Enabled = false;
 
             userSession = frmLogin.userSession;
@@ -789,7 +789,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 btnSave.Enabled = false;
                 txtFolio.Enabled = false;
                 txtIDCaptura.Enabled = false;
-                txtBoxes.Enabled = false;
+                //txtBoxes.Enabled = false;
                 txtGrossLibs.Enabled = false;
                 cbTareTarima.Enabled = false;
                 cbTareBox.Enabled = false;
@@ -1155,7 +1155,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     btnSave.Enabled = false;
                     txtFolio.Enabled = false;
                     txtIDCaptura.Enabled = false;
-                    txtBoxes.Enabled = false;
+                    //txtBoxes.Enabled = false;
                     txtGrossLibs.Enabled = false;
                     cbTareBox.Enabled = false;
                     cbTareTarima.Enabled = false;
