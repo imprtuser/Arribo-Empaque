@@ -422,8 +422,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dgvFolios.Font = fontGridFolios;
             dgvFolios.DefaultCellStyle.SelectionBackColor = (Color)System.Drawing.ColorTranslator.FromHtml("#78B266");
             dgvFolios.DefaultCellStyle.SelectionForeColor = Color.White;
-            dgvFolios.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            dgvFolios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvFolios.AllowUserToResizeColumns = false;
             dgvFolios.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
