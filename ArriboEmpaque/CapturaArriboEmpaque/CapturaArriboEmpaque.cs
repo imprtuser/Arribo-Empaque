@@ -52,6 +52,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
         private void frmCapturaArriboEmpaque_Load(object sender, EventArgs e)
         {
+           
             CheckForIllegalCrossThreadCalls = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -70,7 +71,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
             pingToWS();
             loadTexts();
-            generateTable();
+            generateTableCapture();
             timerPing.Enabled = true;
             timerPing.Interval = 30000;
             timerPing.Start();
@@ -82,6 +83,8 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             this.dateIni = null;
             this.dateFin = null;
             this.idFolioHeader = 0;
+            txtBoxes.Enabled = false;
+            txtGrossLibs.Enabled = false;
 
             userSession = frmLogin.userSession;
             initializePortWeighingMachine();
@@ -267,6 +270,14 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
                 if (dt.Rows.Count > 0)
                 {
+                    if (Convert.ToInt32(lblIdHeader.Text.ToString()) > 0)
+                    {
+                        dgvAddFolios.Rows.Clear();
+                        txtBoxes.Text = String.Empty;
+                        txtGrossLibs.Text = String.Empty;
+                        lblIdHeader.Text = "0";
+                    }
+
                     res.responseType = Convert.ToInt32(dt.Rows[0]["responseType"].ToString());
                     res.descriptionType = dt.Rows[0]["descriptionType"].ToString();
                     res.message = dt.Rows[0]["message"].ToString();
@@ -326,7 +337,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
                         txtIDCaptura.Enabled = true;
-                        txtBoxes.Enabled = true;
+                       // txtBoxes.Enabled = true;
                     }
                     else if (res.responseType == 2)
                     {
@@ -337,15 +348,15 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         btnCancel.Enabled = true;
                         btnSave.Enabled = true;
                         txtFolio.Enabled = true;
-                        txtFolio.Text = String.Empty;
-                        txtBoxes.Text = String.Empty;
-                        txtGrossLibs.Text = String.Empty;
-                        cbTareBox.DataSource = null;
-                        cbTareTarima.DataSource = null;
+                        //txtFolio.Text = String.Empty;
+                       // txtBoxes.Text = String.Empty;
+                        //txtGrossLibs.Text = String.Empty;
+                        //cbTareBox.DataSource = null;
+                        //cbTareTarima.DataSource = null;
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
                         txtIDCaptura.Enabled = true;
-                        txtBoxes.Enabled = true;
+                        //txtBoxes.Enabled = true;
                     }
                 }
             }
@@ -376,18 +387,19 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 row.Cells[10].Value = dtFolio.Rows[0]["iBoxes"].ToString();
                 row.Cells[11].Value = dtFolio.Rows[0]["Fecha"].ToString();
 
-                if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()))
+                if (Convert.ToInt32(lblIdHeader.Text.ToString()) == 0)
                 {
-                    txtBoxes.Text = (Convert.ToInt32(txtBoxes.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["iBoxes"].ToString())).ToString();
-                    txtGrossLibs.Text = (Convert.ToInt32(txtGrossLibs.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["dNet"].ToString())).ToString();
+                    if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()))
+                    {
+                        txtBoxes.Text = (Convert.ToInt32(txtBoxes.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["iBoxes"].ToString())).ToString();
+                        txtGrossLibs.Text = (Convert.ToInt32(txtGrossLibs.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["dNet"].ToString())).ToString();
+                    }
+                    else
+                    {
+                        txtBoxes.Text = dtFolio.Rows[0]["iBoxes"].ToString();
+                        txtGrossLibs.Text = dtFolio.Rows[0]["dNet"].ToString();
+                    }
                 }
-                else
-                {
-                    txtBoxes.Text = dtFolio.Rows[0]["iBoxes"].ToString();
-                    txtGrossLibs.Text = dtFolio.Rows[0]["dNet"].ToString();
-                }
-
-
             }
             catch (Exception ex)
             {
@@ -395,7 +407,28 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-        protected void generateTable()
+        protected void customizationTableFolios()
+        {
+            Font fontGridFolios = new Font("Tahoma", 8, FontStyle.Regular);
+
+            dgvFolios.AutoGenerateColumns = true;
+            dgvFolios.AllowUserToAddRows = false;
+            dgvFolios.AllowUserToDeleteRows = false;
+            dgvFolios.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvFolios.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvFolios.RowsDefaultCellStyle.BackColor = Color.Bisque;
+            dgvFolios.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige;
+            dgvFolios.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dgvFolios.Font = fontGridFolios;
+            dgvFolios.DefaultCellStyle.SelectionBackColor = (Color)System.Drawing.ColorTranslator.FromHtml("#78B266");
+            dgvFolios.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvFolios.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            dgvFolios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvFolios.AllowUserToResizeColumns = false;
+            dgvFolios.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
+
+        protected void generateTableCapture()
         {
             Font font = new Font("Tahoma", 8, FontStyle.Bold);
 
@@ -679,7 +712,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 response.message = "Datos de folio guardados correctamente";
                 txtFolio.Text = String.Empty;
                 txtIDCaptura.Enabled = true;
-                txtBoxes.Enabled = true;
+                //txtBoxes.Enabled = true;
                 //txtBoxes.Text = String.Empty;
                 txtGrossLibs.Enabled = false;
                 //txtGrossLibs.Text = String.Empty;
@@ -689,9 +722,17 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 cbTareTarima.Enabled = true;
                 //dgvAddFolios.Rows.Clear();
                 lblIdHeader.Text = "0";
+                chEnableWeigth.Checked = false;
+                pgInfoFolio.Value = 100;
+                pgInfoFolio.Hide();              
+                lblLoadingInfo.Hide();
             }
             else
             {
+                pgInfoFolio.Value = 100;
+                pgInfoFolio.Hide();
+                lblLoadingInfo.Hide();
+
                 response.responseType = 2;
                 response.message = "No se pudo guardar la información del folio";
             }
@@ -717,11 +758,12 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()) && !String.IsNullOrEmpty(txtGrossLibs.Text.ToString()))
             {
-                //_Folio.dNet = Convert.ToDecimal(txtGrossLibs.Text.ToString());
-                //_Folio.iBoxes = Convert.ToInt32(txtBoxes.Text.ToString());
-
                 if (Convert.ToDecimal(txtGrossLibs.Text.ToString()) > 0 && Convert.ToInt32(txtBoxes.Text.ToString()) > 0)
                 {
+                    pgInfoFolio.Show();
+                    pgInfoFolio.Value = 50;
+                    lblLoadingInfo.Show();
+                    lblLoadingInfo.Text = "Cargando información...";
                     backgroundWorkerSaveFolio.RunWorkerAsync();
                 }
                 else
@@ -922,7 +964,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     lblLoadingFolios.Hide();
                     lblTotalRecords.Hide();
                     lblReady.Hide();
-                    dgvFolios.DataSource = null;
                 }
             }
             catch (Exception ex)
@@ -935,7 +976,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             folio = txtFolioFilter.Text.ToString();
             idPlant = Convert.ToInt32(cbPlants.SelectedValue);
-            idFolioHeader = Convert.ToInt32(txtIDConsulta.Text.ToString());
+            idFolioHeader = !String.IsNullOrEmpty(txtIDConsulta.Text.ToString()) ? Convert.ToInt32(txtIDConsulta.Text.ToString()) : 0;
             pbFolios.Show();
             pbFolios.Value = 50;
             lblLoadingFolios.Show();
@@ -983,6 +1024,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             if (e.TabPage.Name == tbControl.TabPages[1].Name)
             {
+                customizationTableFolios();
                 loadPlants();
                 pbFolios.Show();
                 pbFolios.Value = 50;
@@ -1006,9 +1048,17 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 currentValueCajas = Convert.ToInt32(dgvAddFolios.Rows[e.RowIndex].Cells[10].Value.ToString());
                 String folio = dgvAddFolios.Rows[e.RowIndex].Cells[1].Value.ToString();
                 String newValue = Microsoft.VisualBasic.Interaction.InputBox("Ingrese nuevo valor de cajas", "Edición de cajas para folio" + " " + folio , currentValueCajas.ToString());
+
                 if (!String.IsNullOrEmpty(newValue))
                 {
-                    setNewValueCajas(e.RowIndex, Convert.ToInt32(newValue));
+                    if (validateValueCajas(newValue))
+                    {
+                        setNewValueCajas(e.RowIndex, Convert.ToInt32(newValue));
+                    }
+                    else
+                    {
+                        MessageBox.Show("El formato del valor de cajas no es correcto.", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 else
                 {
@@ -1029,16 +1079,24 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         dgvAddFolios.Rows.RemoveAt(row.Index);
                     }
 
-                    if (Convert.ToInt32(lblIdHeader.Text.ToString()) > 0)
+                    foreach (DataGridViewRow row in dgvAddFolios.Rows)
                     {
-                        foreach (DataGridViewRow row in dgvAddFolios.Rows)
-                        {
-                            sumBoxes += Convert.ToInt32(row.Cells[10].Value.ToString());
-                            sumLibs += Convert.ToInt32(row.Cells[7].Value.ToString());
-                        }
+                        sumBoxes += Convert.ToInt32(row.Cells[10].Value.ToString());
+                        sumLibs += Convert.ToInt32(row.Cells[7].Value.ToString());
+                    }
+
+                    if (sumBoxes > 0 && sumLibs > 0)
+                    {
 
                         txtBoxes.Text = sumBoxes.ToString();
                         txtGrossLibs.Text = sumLibs.ToString();
+                    }
+                    else
+                    {
+                        txtBoxes.Text = String.Empty;
+                        txtGrossLibs.Text = String.Empty;
+                        cbTareBox.DataSource = null;
+                        cbTareTarima.DataSource = null;
                     }
                     txtFolio.Text = String.Empty;
                 }
@@ -1159,16 +1217,16 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             try
             {
-                if (dgvAddFolios.Rows.Count > 0)
-                {
-                    dgvAddFolios.Rows.Clear();
-                }
-
                 DataTable dt = dsInfoFoliosByID.Tables[0];
                 ResponseType res = new ResponseType();
 
                 if (dt.Rows.Count > 0)
                 {
+                    dgvAddFolios.Rows.Clear();
+                    txtBoxes.Text = String.Empty;
+                    txtGrossLibs.Text = String.Empty;
+                    lblIdHeader.Text = "0";
+
                     res.responseType = Convert.ToInt32(dt.Rows[0]["responseType"].ToString());
                     res.descriptionType = dt.Rows[0]["descriptionType"].ToString();
                     res.message = dt.Rows[0]["message"].ToString();
@@ -1179,13 +1237,13 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         DataTable dtFoliosDetails = new DataTable();
                         dtTaresPallet = new DataTable();
                         dtTaresBox = new DataTable();
-                        int sumBoxes = 0;
-                        int sumLbs = 0;
 
                         dtFolioHeader = dsInfoFoliosByID.Tables[1];
                         dtFoliosDetails = dsInfoFoliosByID.Tables[2];
                         dtTaresPallet = dsInfoFoliosByID.Tables[3];
                         dtTaresBox = dsInfoFoliosByID.Tables[4];
+
+                        
 
                         lblIdHeader.Text = dtFolioHeader.Rows[0]["idFolioHeader"].ToString();
                         txtBoxes.Text = dtFolioHeader.Rows[0]["iBoxes"].ToString();
@@ -1210,12 +1268,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                             row.Cells[9].Value = drow["idTarePlantCaja"].ToString();
                             row.Cells[10].Value = drow["iBoxes"].ToString();
                             row.Cells[11].Value = drow["Fecha"].ToString();
-
-                            //sumBoxes += Convert.ToInt32(drow["iBoxes"].ToString());
-                            //sumLbs += Convert.ToInt32(drow["dNet"].ToString());
                         }
-                        //txtBoxes.Text = sumBoxes.ToString();
-                        //txtGrossLibs.Text = sumLbs.ToString();
 
                         loadTaresBox(dtTaresBox);
                         loadTaresPallet(dtTaresPallet);
@@ -1229,7 +1282,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         txtFolio.Text = String.Empty;
                         txtIDCaptura.Enabled = true;
                         txtIDCaptura.Text = String.Empty;
-                        txtBoxes.Enabled = true;
+                       // txtBoxes.Enabled = true;
                         txtGrossLibs.Enabled = false;
                         cbTareBox.Enabled = true;
                         cbTareTarima.Enabled = true;
@@ -1245,11 +1298,11 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         txtFolio.Enabled = true;
                         txtIDCaptura.Enabled = true;
                         txtIDCaptura.Text = String.Empty;
-                        txtBoxes.Text = String.Empty;
-                        txtBoxes.Enabled = true;
-                        txtGrossLibs.Text = String.Empty;
-                        cbTareBox.DataSource = null;
-                        cbTareTarima.DataSource = null;
+                        //txtBoxes.Text = String.Empty;
+                        //txtBoxes.Enabled = true;
+                        //txtGrossLibs.Text = String.Empty;
+                        cbTareTarima.Enabled = true;
+                        cbTareBox.Enabled = true;
                     }
                 }
             }
@@ -1386,7 +1439,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             if (newValueCajas > 0)
             {
                 int total = 0;
-                if (dgvFolios.Rows.Count > 1)
+                if (dgvFolios.Rows.Count == 1)
                 {
                     dgvAddFolios.Rows[rIndex].Cells[10].Value = newValueCajas;
                     total = newValueCajas;
@@ -1407,6 +1460,19 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 MessageBox.Show("El valor del cajas del folio debe ser mayor a 0", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             
+        }
+
+        protected Boolean validateValueCajas(String newValueCajas)
+        {
+            int newValue;
+            if (int.TryParse(newValueCajas, out newValue))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

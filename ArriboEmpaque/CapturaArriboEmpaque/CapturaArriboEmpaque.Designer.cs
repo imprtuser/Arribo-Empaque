@@ -153,7 +153,7 @@
             this.tbControl.Location = new System.Drawing.Point(0, 27);
             this.tbControl.Name = "tbControl";
             this.tbControl.SelectedIndex = 0;
-            this.tbControl.Size = new System.Drawing.Size(1239, 542);
+            this.tbControl.Size = new System.Drawing.Size(1270, 542);
             this.tbControl.TabIndex = 1;
             this.tbControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tbControl_Selecting);
             // 
@@ -164,7 +164,7 @@
             this.tabCapturaArriboEmpaque.Location = new System.Drawing.Point(4, 22);
             this.tabCapturaArriboEmpaque.Name = "tabCapturaArriboEmpaque";
             this.tabCapturaArriboEmpaque.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCapturaArriboEmpaque.Size = new System.Drawing.Size(1231, 516);
+            this.tabCapturaArriboEmpaque.Size = new System.Drawing.Size(1262, 516);
             this.tabCapturaArriboEmpaque.TabIndex = 0;
             this.tabCapturaArriboEmpaque.Text = "Captura de Arribo Empaque";
             this.tabCapturaArriboEmpaque.UseVisualStyleBackColor = true;
@@ -201,7 +201,7 @@
             this.panel1.Controls.Add(this.lblCapArribo);
             this.panel1.Controls.Add(this.lblFolio);
             this.panel1.Controls.Add(this.txtFolio);
-            this.panel1.Location = new System.Drawing.Point(45, 28);
+            this.panel1.Location = new System.Drawing.Point(59, 28);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1144, 466);
             this.panel1.TabIndex = 0;
@@ -501,7 +501,7 @@
             this.tabConsultaArriboEmpaque.Location = new System.Drawing.Point(4, 22);
             this.tabConsultaArriboEmpaque.Name = "tabConsultaArriboEmpaque";
             this.tabConsultaArriboEmpaque.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConsultaArriboEmpaque.Size = new System.Drawing.Size(1231, 516);
+            this.tabConsultaArriboEmpaque.Size = new System.Drawing.Size(1262, 516);
             this.tabConsultaArriboEmpaque.TabIndex = 1;
             this.tabConsultaArriboEmpaque.Text = "Consulta de Arribo Empaque";
             this.tabConsultaArriboEmpaque.UseVisualStyleBackColor = true;
@@ -518,7 +518,7 @@
             this.tlpConsult.RowCount = 2;
             this.tlpConsult.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 15.03131F));
             this.tlpConsult.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 84.96868F));
-            this.tlpConsult.Size = new System.Drawing.Size(1235, 517);
+            this.tlpConsult.Size = new System.Drawing.Size(1266, 517);
             this.tlpConsult.TabIndex = 0;
             // 
             // groupBox1
@@ -538,7 +538,7 @@
             this.groupBox1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1229, 65);
+            this.groupBox1.Size = new System.Drawing.Size(1260, 65);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Filtros";
@@ -571,7 +571,7 @@
             // 
             this.btnFilter.Location = new System.Drawing.Point(1057, 17);
             this.btnFilter.Name = "btnFilter";
-            this.btnFilter.Size = new System.Drawing.Size(147, 36);
+            this.btnFilter.Size = new System.Drawing.Size(197, 36);
             this.btnFilter.TabIndex = 121;
             this.btnFilter.Text = "Filtrar";
             this.btnFilter.UseVisualStyleBackColor = true;
@@ -645,7 +645,7 @@
             this.dgvFolios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvFolios.Location = new System.Drawing.Point(3, 80);
             this.dgvFolios.Name = "dgvFolios";
-            this.dgvFolios.Size = new System.Drawing.Size(1229, 433);
+            this.dgvFolios.Size = new System.Drawing.Size(1260, 433);
             this.dgvFolios.TabIndex = 1;
             // 
             // backgroundWorkerFindFolio
