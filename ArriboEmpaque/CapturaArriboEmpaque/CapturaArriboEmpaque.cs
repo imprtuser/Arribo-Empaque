@@ -57,6 +57,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = true;
+            //txtFolio.Select();
             resourceManager = new ResourceManager("ArriboEmpaque.Language.Res", typeof(frmCapturaArriboEmpaque).Assembly);
             backgroundWorkerFindFolio.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerFindFolio_RunWorkerCompleted);
             backgroundWorkerSaveFolio.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerSaveFolio_RunWorkerCompleted);
@@ -83,7 +84,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             this.dateIni = null;
             this.dateFin = null;
             this.idFolioHeader = 0;
-            txtBoxes.Enabled = false;
+            txtBoxes.Enabled = true;
             txtGrossLibs.Enabled = false;
 
             userSession = frmLogin.userSession;
@@ -223,37 +224,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-        protected void setValues(Folio _Folio)
-        {
-            try
-            {
-                lblFolioName.Text = _Folio.folioCode;
-                lblDate.Text = String.Format("Fecha: {0}", _Folio.vDate);
-                lblPlant.Text = _Folio.vPlant;
-                lblGreenhouse.Text = _Folio.vGreenhouse;
-                lblQuality.Text = String.Format("Calidad {0}", _Folio.vQuality);
-
-                if (_Folio.isGP == 1)
-                {
-                    lblGP.Text = "Está en GP";
-                    lblGP.ForeColor = Color.FromArgb(0, 128, 0);
-                }
-                else
-                {
-                    lblGP.Text = "No está en GP";
-                    lblGP.ForeColor = Color.FromArgb(220, 20, 60);
-                }
-
-                txtBoxes.Text = _Folio.iBoxes.ToString();
-                txtGrossLibs.Text = _Folio.dNet.ToString();
-
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         private void backgroundWorkerFindFolio_DoWork(object sender, DoWorkEventArgs e)
         {
             String folio = txtFolio.Text.ToString().Trim();
@@ -337,7 +307,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
                         txtIDCaptura.Enabled = true;
-                       // txtBoxes.Enabled = true;
                     }
                     else if (res.responseType == 2)
                     {
@@ -348,15 +317,9 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         btnCancel.Enabled = true;
                         btnSave.Enabled = true;
                         txtFolio.Enabled = true;
-                        //txtFolio.Text = String.Empty;
-                       // txtBoxes.Text = String.Empty;
-                        //txtGrossLibs.Text = String.Empty;
-                        //cbTareBox.DataSource = null;
-                        //cbTareTarima.DataSource = null;
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
                         txtIDCaptura.Enabled = true;
-                        //txtBoxes.Enabled = true;
                     }
                 }
             }
@@ -422,8 +385,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dgvFolios.Font = fontGridFolios;
             dgvFolios.DefaultCellStyle.SelectionBackColor = (Color)System.Drawing.ColorTranslator.FromHtml("#78B266");
             dgvFolios.DefaultCellStyle.SelectionForeColor = Color.White;
-            dgvFolios.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            dgvFolios.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dgvFolios.AllowUserToResizeColumns = false;
             dgvFolios.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
         }
@@ -726,12 +687,14 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 pgInfoFolio.Value = 100;
                 pgInfoFolio.Hide();              
                 lblLoadingInfo.Hide();
+                //this.ActiveControl = txtFolio;
             }
             else
             {
                 pgInfoFolio.Value = 100;
                 pgInfoFolio.Hide();
                 lblLoadingInfo.Hide();
+                //this.ActiveControl = txtFolio;
 
                 response.responseType = 2;
                 response.message = "No se pudo guardar la información del folio";
@@ -789,7 +752,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 btnSave.Enabled = false;
                 txtFolio.Enabled = false;
                 txtIDCaptura.Enabled = false;
-                txtBoxes.Enabled = false;
+                //txtBoxes.Enabled = false;
                 txtGrossLibs.Enabled = false;
                 cbTareTarima.Enabled = false;
                 cbTareBox.Enabled = false;
@@ -806,6 +769,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             if ((int)e.KeyChar == (int)Keys.Enter)
             {
                 findInfoFolioThread();
+                //this.ActiveControl = txtFolio;
             }
 
         }
@@ -815,6 +779,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             if (e.KeyData == Keys.Tab)
             {
                 findInfoFolioThread();
+                //this.ActiveControl = txtFolio;
             }
         }
 
@@ -1036,6 +1001,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
             else
             {
+                txtFolio.Select();
                 lblTotalRecords.Hide();
                 lblReady.Hide();
             }
@@ -1129,6 +1095,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             if ((int)e.KeyChar == (int)Keys.Enter)
             {
                 findFoliosByID();
+                //this.ActiveControl = txtFolio;
             }
         }
 
@@ -1137,6 +1104,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             if (e.KeyData == Keys.Tab)
             {
                 findFoliosByID();
+                //this.ActiveControl = txtFolio;
             }
         }
 
@@ -1155,7 +1123,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     btnSave.Enabled = false;
                     txtFolio.Enabled = false;
                     txtIDCaptura.Enabled = false;
-                    txtBoxes.Enabled = false;
+                   //txtBoxes.Enabled = false;
                     txtGrossLibs.Enabled = false;
                     cbTareBox.Enabled = false;
                     cbTareTarima.Enabled = false;
@@ -1243,14 +1211,11 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         dtTaresPallet = dsInfoFoliosByID.Tables[3];
                         dtTaresBox = dsInfoFoliosByID.Tables[4];
 
-                        
-
                         lblIdHeader.Text = dtFolioHeader.Rows[0]["idFolioHeader"].ToString();
                         txtBoxes.Text = dtFolioHeader.Rows[0]["iBoxes"].ToString();
                         txtGrossLibs.Text = dtFolioHeader.Rows[0]["dGrossLibs"].ToString();
                         cbTareTarima.SelectedValue = Convert.ToInt32(dtFolioHeader.Rows[0]["idTarePlant"].ToString());
                         cbTareBox.SelectedValue = Convert.ToInt32(dtFolioHeader.Rows[0]["idTareBox"].ToString());
-
 
                         foreach (DataRow drow in dtFoliosDetails.Rows)
                         {
