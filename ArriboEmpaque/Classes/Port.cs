@@ -50,10 +50,6 @@ namespace ArriboEmpaque.Classes
         {
             try
             {
-                //int idPort = Convert.ToInt32(row["idPort"].ToString());
-                //String portName = row["portName"].ToString();
-                //int active = Convert.ToInt32(row["active"].ToString());
-
                 String sqlString = "SELECT * FROM tblPorts WHERE idPort='" + idPort + "'";
                 SQLiteConnection connection = database.openConnection();
                 SQLiteDataReader reader = database.executeSQLReader(sqlString, connection);

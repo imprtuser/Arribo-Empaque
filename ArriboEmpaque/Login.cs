@@ -155,6 +155,9 @@ namespace ArriboEmpaque
             {
                 loginResponse.loginSuccess = false;
                 loginResponse.message = "Usuario o contraseña incorrectos";
+                txtUser.Enabled = true;
+                txtPassword.Enabled = true;
+                btnLogin.Enabled = true;
             }
 
             e.Result = loginResponse;

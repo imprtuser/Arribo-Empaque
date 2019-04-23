@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigPort));
             this.dgvPorts = new System.Windows.Forms.DataGridView();
             this.btnSavePorts = new System.Windows.Forms.Button();
             this.pbLoadingPorts = new System.Windows.Forms.ProgressBar();
@@ -83,6 +84,7 @@
             this.Controls.Add(this.pbLoadingPorts);
             this.Controls.Add(this.btnSavePorts);
             this.Controls.Add(this.dgvPorts);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ConfigPort";
             this.Text = "Configuración puerto báscula";
             this.Load += new System.EventHandler(this.ConfigPort_Load);

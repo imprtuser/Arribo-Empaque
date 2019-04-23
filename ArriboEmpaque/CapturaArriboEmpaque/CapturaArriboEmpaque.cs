@@ -31,6 +31,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         private DataSet dsInfo;
         private DataSet dsInfoFoliosByID;
         private DataSet dsFolios;
+        private DataSet dsFoliosByID;
         private Folio _Folio;
         private String folio;
         private int idPlant;
@@ -38,12 +39,14 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         private String dateIni;
         private String dateFin;
         private DataTable dtFolios;
+        private DataTable dtFoliosByID;
         private DataTable dtTaresPallet;
         private DataTable dtTaresBox;
         private SerialPort oSerialPort;
         private Port port;
         public static String userSession = String.Empty;
         private int currentValueCajas = 0;
+        private ResponseType res;
 
         public frmCapturaArriboEmpaque()
         {
@@ -52,7 +55,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
         private void frmCapturaArriboEmpaque_Load(object sender, EventArgs e)
         {
-           
+
             CheckForIllegalCrossThreadCalls = false;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -62,6 +65,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             backgroundWorkerSaveFolio.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerSaveFolio_RunWorkerCompleted);
             backgroundWorkerGetFolios.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerGetFolios_RunWorkerCompleted);
             backgroundWorkerGetFoliosByID.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerGetFoliosByID_RunWorkerCompleted);
+            backgroundWorkerFilterFoliosByID.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorkerFilterFoliosByID_RunWorkerCompleted);
 
             dtpDateIni.Format = DateTimePickerFormat.Custom;
             dtpDateIni.CustomFormat = "yyyy-MM-dd";
@@ -83,18 +87,21 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             this.dateIni = null;
             this.dateFin = null;
             this.idFolioHeader = 0;
-            txtBoxes.Enabled = true;
+            txtBoxes.Enabled = false;
             txtGrossLibs.Enabled = false;
+            txtNetLibsPlants.Enabled = false;
+            txtNetLibsPesaje.Enabled = false;
+            txtDifference.Enabled = false;
+            txtFolio.Focus();
 
             userSession = frmLogin.userSession;
-            initializePortWeighingMachine();
+            //initializePortWeighingMachine();
         }
 
         private void btnLangCAE_Click(object sender, EventArgs e)
         {
             changeLanguage();
         }
-
 
         protected void loadTaresPallet(DataTable dtTaresPallet)
         {
@@ -137,6 +144,9 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             lblLibs.Text = resourceManager.GetString("librasNetas", culture);
             btnCancel.Text = resourceManager.GetString("cancelar", culture);
             btnSave.Text = resourceManager.GetString("guardar", culture);
+            lblNetLibsPlants.Text = resourceManager.GetString("librasNetasPlantaOrigen", culture);
+            lblNetLibsPesaje.Text = resourceManager.GetString("librasNetasPesaje", culture);
+            lblDifference.Text = resourceManager.GetString("diferencia", culture);
         }
 
         protected void changeLanguage()
@@ -163,7 +173,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-
         protected void enableWeight()
         {
             try
@@ -187,7 +196,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             enableWeight();
         }
-
 
         protected DataSet getInfoFolio(String folio)
         {
@@ -260,7 +268,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dsInfo = getInfoFolio(folio);
         }
 
-
         private void backgroundWorkerFindFolio_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
@@ -274,7 +281,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     {
                         dgvAddFolios.Rows.Clear();
                         txtBoxes.Text = String.Empty;
-                        txtGrossLibs.Text = String.Empty;
+                        txtNetLibsPlants.Text = String.Empty;
                         lblIdHeader.Text = "0";
                     }
 
@@ -289,6 +296,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         dtTaresBox = new DataTable();
 
                         dtFolio = dsInfo.Tables[1];
+
                         dtTaresPallet = dsInfo.Tables[2];
                         dtTaresBox = dsInfo.Tables[3];
 
@@ -337,7 +345,8 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
                         txtIDCaptura.Enabled = true;
-                       // txtBoxes.Enabled = true;
+                        // txtBoxes.Enabled = true;
+                        txtFolio.Focus();
                     }
                     else if (res.responseType == 2)
                     {
@@ -348,15 +357,16 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         btnCancel.Enabled = true;
                         btnSave.Enabled = true;
                         txtFolio.Enabled = true;
-                        //txtFolio.Text = String.Empty;
-                       // txtBoxes.Text = String.Empty;
-                        //txtGrossLibs.Text = String.Empty;
-                        //cbTareBox.DataSource = null;
-                        //cbTareTarima.DataSource = null;
+                        txtFolio.Text = String.Empty;
+                        txtBoxes.Text = String.Empty;
+                        txtGrossLibs.Text = String.Empty;
+                        cbTareBox.DataSource = null;
+                        cbTareTarima.DataSource = null;
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
                         txtIDCaptura.Enabled = true;
                         //txtBoxes.Enabled = true;
+                        txtFolio.Focus();
                     }
                 }
             }
@@ -392,14 +402,15 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()))
                     {
                         txtBoxes.Text = (Convert.ToInt32(txtBoxes.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["iBoxes"].ToString())).ToString();
-                        txtGrossLibs.Text = (Convert.ToInt32(txtGrossLibs.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["dNet"].ToString())).ToString();
+                        txtNetLibsPlants.Text = (Convert.ToInt32(txtNetLibsPlants.Text.ToString()) + Convert.ToInt32(dtFolio.Rows[0]["dNet"].ToString())).ToString();
                     }
                     else
                     {
                         txtBoxes.Text = dtFolio.Rows[0]["iBoxes"].ToString();
-                        txtGrossLibs.Text = dtFolio.Rows[0]["dNet"].ToString();
+                        txtNetLibsPlants.Text = dtFolio.Rows[0]["dNet"].ToString();
                     }
                 }
+                getNetLibsPesaje();
             }
             catch (Exception ex)
             {
@@ -525,7 +536,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             dgvAddFolios.Columns[6].HeaderCell.Style.Font = font;
 
             DataGridViewTextBoxColumn netCol = new DataGridViewTextBoxColumn();
-            netCol.HeaderText = "Lnetas";
+            netCol.HeaderText = "Libras netas";
             netCol.DataPropertyName = "dNet";
             netCol.Name = "dNet";
             netCol.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
@@ -648,7 +659,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-
         protected Boolean saveInfoFolio()
         {
             try
@@ -674,16 +684,18 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 StreamReader responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
                 string responseData = responseReader.ReadToEnd();
 
+
                 responseReader.Close();
                 webRequest.GetResponse().Close();
 
                 DataSet ds = (DataSet)JsonConvert.DeserializeObject(responseData, typeof(DataSet));
                 DataTable dt = ds.Tables[0];
-                ResponseType res = new ResponseType();
+                res = new ResponseType();
 
                 if (dt.Rows.Count > 0)
                 {
                     res.responseType = Convert.ToInt32(dt.Rows[0]["responseType"].ToString());
+                    res.descriptionType = dt.Rows[0]["descriptionResponse"].ToString();
                     if (res.responseType == 1)
                     {
                         savedFolio = true;
@@ -710,20 +722,23 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 response.message = "Datos de folio guardados correctamente";
                 txtFolio.Text = String.Empty;
                 txtIDCaptura.Enabled = true;
-                //txtBoxes.Enabled = true;
-                //txtBoxes.Text = String.Empty;
+                txtBoxes.Enabled = true;
+                txtBoxes.Text = String.Empty;
                 txtGrossLibs.Enabled = false;
-                //txtGrossLibs.Text = String.Empty;
-                //cbTareBox.DataSource = null;
-                //cbTareTarima.DataSource = null;
+                txtGrossLibs.Text = String.Empty;
+                cbTareBox.DataSource = null;
+                cbTareTarima.DataSource = null;
                 cbTareBox.Enabled = true;
                 cbTareTarima.Enabled = true;
-                //dgvAddFolios.Rows.Clear();
+                dgvAddFolios.Rows.Clear();
                 lblIdHeader.Text = "0";
                 chEnableWeigth.Checked = false;
                 pgInfoFolio.Value = 100;
-                pgInfoFolio.Hide();              
+                pgInfoFolio.Hide();
                 lblLoadingInfo.Hide();
+                txtNetLibsPlants.Text = String.Empty;
+                txtNetLibsPesaje.Text = String.Empty;
+                txtDifference.Text = String.Empty;
             }
             else
             {
@@ -731,8 +746,17 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 pgInfoFolio.Hide();
                 lblLoadingInfo.Hide();
 
-                response.responseType = 2;
-                response.message = "No se pudo guardar la información del folio";
+                if(res.responseType == 3)
+                {
+                    response.responseType = 3;
+                    response.message = "Los folios deben ser de la misma planta";
+                }
+
+                if(res.responseType == 2)
+                {
+                    response.responseType = 2;
+                    response.message = "No se pudo guardar la información del folio";
+                }
             }
 
             e.Result = response;
@@ -748,7 +772,15 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
             else
             {
-                MessageBox.Show(response.message, " Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (response.responseType == 2)
+                {
+                    MessageBox.Show(response.message, " Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                if(response.responseType == 3)
+                {
+                    MessageBox.Show(response.message, " Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
         }
 
@@ -756,22 +788,51 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()) && !String.IsNullOrEmpty(txtGrossLibs.Text.ToString()))
             {
-                if (Convert.ToDecimal(txtGrossLibs.Text.ToString()) > 0 && Convert.ToInt32(txtBoxes.Text.ToString()) > 0)
+                if (validateCajasAndGrossLibs(txtBoxes.Text.ToString(), txtGrossLibs.Text.ToString()))
                 {
-                    pgInfoFolio.Show();
-                    pgInfoFolio.Value = 50;
-                    lblLoadingInfo.Show();
-                    lblLoadingInfo.Text = "Cargando información...";
-                    backgroundWorkerSaveFolio.RunWorkerAsync();
+                    if (Convert.ToDecimal(txtGrossLibs.Text.ToString()) > 0 && Convert.ToInt32(txtBoxes.Text.ToString()) > 0)
+                    {
+                        pgInfoFolio.Show();
+                        pgInfoFolio.Value = 50;
+                        lblLoadingInfo.Show();
+                        lblLoadingInfo.Text = "Cargando información...";
+                        backgroundWorkerSaveFolio.RunWorkerAsync();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Las cajas y/o libras netas deben ser mayor a 0", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Las cajas y/o libras netas deben ser mayor a 0", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Las cajas y/o libras no tienen el formato correcto", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             else
             {
                 MessageBox.Show("Debes ingresar las cajas y/o libras del folio", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        protected Boolean validateCajasAndGrossLibs(String cajas, String grossLibs)
+        {
+            try
+            {
+                int outCajas;
+                int outGrossLibs;
+                if (int.TryParse(cajas, out outCajas) && int.TryParse(grossLibs, out outGrossLibs))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
             }
         }
 
@@ -803,6 +864,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
         {
             if ((int)e.KeyChar == (int)Keys.Enter)
             {
+                initializePortWeighingMachine();
                 findInfoFolioThread();
             }
 
@@ -810,8 +872,10 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
         private void txtFolio_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
+
             if (e.KeyData == Keys.Tab)
             {
+                initializePortWeighingMachine();
                 findInfoFolioThread();
             }
         }
@@ -891,7 +955,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-
         protected void pingToWS()
         {
             try
@@ -923,7 +986,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
             catch (Exception ex)
             {
-                throw ex;
+                btnHasConnection.Image = ArriboEmpaque.Properties.Resources.red;
             }
         }
 
@@ -951,17 +1014,24 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     pbFolios.Value = 100;
                     pbFolios.Hide();
                     lblLoadingFolios.Hide();
-                    lblTotalRecords.Show();
-                    lblTotalRecords.Text = "Registros totales:" + dtFolios.Rows.Count;
-                    lblReady.Show();
+                    txtIDConsulta.Enabled = true;
+                    txtFolioFilter.Enabled = true;
+                    cbPlants.Enabled = true;
+                    dtpDateIni.Enabled = true;
+                    dtpDateFin.Enabled = true;
+                    btnFilter.Enabled = true;
                 }
                 else
                 {
-                    MessageBox.Show("No se encontraron registros", "Consulta Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No se encontraron registros para la fecha actual", "Consulta Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     pbFolios.Hide();
                     lblLoadingFolios.Hide();
-                    lblTotalRecords.Hide();
-                    lblReady.Hide();
+                    txtIDConsulta.Enabled = true;
+                    txtFolioFilter.Enabled = true;
+                    cbPlants.Enabled = true;
+                    dtpDateIni.Enabled = true;
+                    dtpDateFin.Enabled = true;
+                    btnFilter.Enabled = true;
                 }
             }
             catch (Exception ex)
@@ -979,11 +1049,14 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             pbFolios.Value = 50;
             lblLoadingFolios.Show();
             lblLoadingFolios.Text = "Cargando Información...";
-            lblTotalRecords.Hide();
-            lblReady.Hide();
+            txtIDConsulta.Enabled = false;
+            txtFolioFilter.Enabled = false;
+            cbPlants.Enabled = false;
+            dtpDateIni.Enabled = false;
+            dtpDateFin.Enabled = false;
+            btnFilter.Enabled = false;
             backgroundWorkerGetFolios.RunWorkerAsync();
         }
-
 
         protected void loadPlants()
         {
@@ -1010,6 +1083,37 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 cbPlants.DisplayMember = "Name";
                 cbPlants.DataSource = dtPlants;
 
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        protected void loadPlants2()
+        {
+            try
+            {
+                const String contentType = "application/x-www-form-urlencoded";
+                var url = config.pathWS + "/" + config.webMethodGetPlants;
+
+                CookieContainer cookies = new CookieContainer();
+                HttpWebRequest webRequest = WebRequest.Create(url) as HttpWebRequest;
+                webRequest.Method = "POST";
+                webRequest.ContentType = contentType;
+                webRequest.ContentLength = 0;
+
+                StreamReader responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
+                string responseData = responseReader.ReadToEnd();
+
+                responseReader.Close();
+                webRequest.GetResponse().Close();
+
+                DataTable dtPlants = (DataTable)JsonConvert.DeserializeObject(responseData, typeof(DataTable));
+
+                cbPlants2.ValueMember = "ID";
+                cbPlants2.DisplayMember = "Name";
+                cbPlants2.DataSource = dtPlants;
 
             }
             catch (Exception ex)
@@ -1020,32 +1124,52 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
         private void tbControl_Selecting(object sender, TabControlCancelEventArgs e)
         {
-            if (e.TabPage.Name == tbControl.TabPages[1].Name)
+            switch (e.TabPage.Name)
             {
-                customizationTableFolios();
-                loadPlants();
-                pbFolios.Show();
-                pbFolios.Value = 50;
-                lblLoadingFolios.Show();
-                lblLoadingFolios.Text = "Cargando Información...";
-                lblTotalRecords.Hide();
-                lblReady.Hide();
-                backgroundWorkerGetFolios.RunWorkerAsync();
-            }
-            else
-            {
-                lblTotalRecords.Hide();
-                lblReady.Hide();
+                case "tabCapturaArriboEmpaque":
+                    break;
+                case "tabConsultaArriboEmpaque":
+                    customizationTableFolios();
+                    loadPlants();
+                    pbFolios.Show();
+                    pbFolios.Value = 50;
+                    lblLoadingFolios.Show();
+                    lblLoadingFolios.Text = "Cargando Información...";
+                    txtIDConsulta.Enabled = false;
+                    txtFolioFilter.Enabled = false;
+                    cbPlants.Enabled = false;
+                    dtpDateIni.Enabled = false;
+                    dtpDateFin.Enabled = false;
+                    btnFilter.Enabled = false;
+                    backgroundWorkerGetFolios.RunWorkerAsync();
+                    break;
+                case "tabConsultaFoliosByID":
+                    customizationTableFoliosByID();
+                    loadPlants2();
+                    pbFolios.Show();
+                    pbFolios.Value = 50;
+                    lblLoadingFolios.Show();
+                    lblLoadingFolios.Text = "Cargando Información...";
+                    txtIDConsulta.Enabled = false;
+                    txtFolioFilter.Enabled = false;
+                    cbPlants2.Enabled = false;
+                    dtpDateIni2.Enabled = false;
+                    dtpDateFin2.Enabled = false;
+                    btnFilter2.Enabled = false;
+                    backgroundWorkerFilterFoliosByID.RunWorkerAsync();
+                    break;
+                default:
+                    break;
             }
         }
 
         private void dgvAddFolios_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if(e.ColumnIndex == 12)
+            if (e.ColumnIndex == 12)
             {
                 currentValueCajas = Convert.ToInt32(dgvAddFolios.Rows[e.RowIndex].Cells[10].Value.ToString());
                 String folio = dgvAddFolios.Rows[e.RowIndex].Cells[1].Value.ToString();
-                String newValue = Microsoft.VisualBasic.Interaction.InputBox("Ingrese nuevo valor de cajas", "Edición de cajas para folio" + " " + folio , currentValueCajas.ToString());
+                String newValue = Microsoft.VisualBasic.Interaction.InputBox("Ingrese nuevo valor de cajas", "Edición de cajas para folio" + " " + folio, currentValueCajas.ToString());
 
                 if (!String.IsNullOrEmpty(newValue))
                 {
@@ -1087,12 +1211,15 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     {
 
                         txtBoxes.Text = sumBoxes.ToString();
-                        txtGrossLibs.Text = sumLibs.ToString();
+                        txtNetLibsPlants.Text = sumLibs.ToString();
+                        getNetLibsPesaje();
                     }
                     else
                     {
                         txtBoxes.Text = String.Empty;
-                        txtGrossLibs.Text = String.Empty;
+                        txtNetLibsPlants.Text = String.Empty;
+                        txtNetLibsPesaje.Text = String.Empty;
+                        txtDifference.Text = String.Empty;
                         cbTareBox.DataSource = null;
                         cbTareTarima.DataSource = null;
                     }
@@ -1138,7 +1265,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
         }
 
-
         protected void findFoliosByID()
         {
             try
@@ -1153,7 +1279,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     btnSave.Enabled = false;
                     txtFolio.Enabled = false;
                     txtIDCaptura.Enabled = false;
-                    //txtBoxes.Enabled = false;
                     txtGrossLibs.Enabled = false;
                     cbTareBox.Enabled = false;
                     cbTareTarima.Enabled = false;
@@ -1217,12 +1342,13 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             {
                 DataTable dt = dsInfoFoliosByID.Tables[0];
                 ResponseType res = new ResponseType();
+                int sumaLibrasNetas = 0;
 
                 if (dt.Rows.Count > 0)
                 {
                     dgvAddFolios.Rows.Clear();
                     txtBoxes.Text = String.Empty;
-                    txtGrossLibs.Text = String.Empty;
+                    txtNetLibsPlants.Text = String.Empty;
                     lblIdHeader.Text = "0";
 
                     res.responseType = Convert.ToInt32(dt.Rows[0]["responseType"].ToString());
@@ -1241,11 +1367,11 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         dtTaresPallet = dsInfoFoliosByID.Tables[3];
                         dtTaresBox = dsInfoFoliosByID.Tables[4];
 
-                        
+                        loadTaresBox(dtTaresBox);
+                        loadTaresPallet(dtTaresPallet);
 
                         lblIdHeader.Text = dtFolioHeader.Rows[0]["idFolioHeader"].ToString();
                         txtBoxes.Text = dtFolioHeader.Rows[0]["iBoxes"].ToString();
-                        txtGrossLibs.Text = dtFolioHeader.Rows[0]["dGrossLibs"].ToString();
                         cbTareTarima.SelectedValue = Convert.ToInt32(dtFolioHeader.Rows[0]["idTarePlant"].ToString());
                         cbTareBox.SelectedValue = Convert.ToInt32(dtFolioHeader.Rows[0]["idTareBox"].ToString());
 
@@ -1268,8 +1394,15 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                             row.Cells[11].Value = drow["Fecha"].ToString();
                         }
 
-                        loadTaresBox(dtTaresBox);
-                        loadTaresPallet(dtTaresPallet);
+
+                        foreach (DataGridViewRow row in dgvAddFolios.Rows)
+                        {
+                            sumaLibrasNetas += Convert.ToInt32(row.Cells[7].Value.ToString());
+                        }
+
+                        txtNetLibsPlants.Text = sumaLibrasNetas.ToString();
+
+                        getNetLibsPesaje();
 
                         pgInfoFolio.Value = 100;
                         pgInfoFolio.Hide();
@@ -1280,10 +1413,10 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         txtFolio.Text = String.Empty;
                         txtIDCaptura.Enabled = true;
                         txtIDCaptura.Text = String.Empty;
-                       // txtBoxes.Enabled = true;
                         txtGrossLibs.Enabled = false;
                         cbTareBox.Enabled = true;
                         cbTareTarima.Enabled = true;
+                        txtFolio.Focus();
                     }
                     else if (res.responseType == 2)
                     {
@@ -1296,11 +1429,9 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         txtFolio.Enabled = true;
                         txtIDCaptura.Enabled = true;
                         txtIDCaptura.Text = String.Empty;
-                        //txtBoxes.Text = String.Empty;
-                        //txtBoxes.Enabled = true;
-                        //txtGrossLibs.Text = String.Empty;
                         cbTareTarima.Enabled = true;
                         cbTareBox.Enabled = true;
+                        txtFolio.Focus();
                     }
                 }
             }
@@ -1309,7 +1440,6 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 throw ex;
             }
         }
-
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -1324,34 +1454,44 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
 
 
 
-        protected void initializePortWeighingMachine()
+        #region Sección para inicializar el puerto de la báscula
+        public void initializePortWeighingMachine()
         {
             String serialPort = String.Empty;
 
             try
             {
                 port = new Port();
-                serialPort = port.getSerialPort();
-                oSerialPort = new SerialPort(serialPort);
 
-                if (oSerialPort.IsOpen)
+                if (!String.IsNullOrEmpty(port.getSerialPort()))
                 {
-                    oSerialPort.Close();
-                }
+                    serialPort = port.getSerialPort();
+                    oSerialPort = new SerialPort(serialPort);
 
-                oSerialPort.PortName = serialPort;
-                oSerialPort.BaudRate = 9600;
-                oSerialPort.Parity = Parity.Even;
-                oSerialPort.StopBits = StopBits.One;
-                oSerialPort.DataBits = 7;
-                oSerialPort.Handshake = Handshake.None;
-                oSerialPort.DtrEnable = true;
-                oSerialPort.RtsEnable = true;
-                oSerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
-                oSerialPort.Open();
+                    if (oSerialPort.IsOpen)
+                    {
+                        oSerialPort.Close();
+                    }
+
+                    oSerialPort.PortName = serialPort;
+                    oSerialPort.BaudRate = 9600;
+                    oSerialPort.Parity = Parity.Even;
+                    oSerialPort.StopBits = StopBits.One;
+                    oSerialPort.DataBits = 7;
+                    oSerialPort.Handshake = Handshake.None;
+                    oSerialPort.DtrEnable = true;
+                    oSerialPort.RtsEnable = true;
+                    oSerialPort.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
+                    oSerialPort.Open();
+                }
+                else
+                {
+                    MessageBox.Show("No se ha inicializado un puerto para la báscula", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             catch (Exception ex)
             {
+
                 if (oSerialPort.IsOpen)
                 {
                     oSerialPort.Close();
@@ -1393,7 +1533,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                 }
                 oSerialPort.Close();
 
-                String librasFinal = "";
+                String librasFinalCadena = "";
                 int mayor = 0, contador = 0;
                 for (int i = 0; i < lista.Count; i++)
                 {
@@ -1410,13 +1550,15 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                     }
                     if (contador > mayor)
                     {
-                        librasFinal = lista[i];
+                        librasFinalCadena = lista[i];
                         mayor = contador;
                     }
                 }
                 Control.CheckForIllegalCrossThreadCalls = false;
 
-                txtGrossLibs.Text = "" + librasFinal;
+                int librasFinales = Convert.ToInt32(Math.Round(Convert.ToDecimal(librasFinalCadena)));
+
+                txtGrossLibs.Text = "" + librasFinales.ToString();
 
             }
             catch (Exception ex)
@@ -1425,6 +1567,7 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             }
 
         }
+        #endregion
 
         private void puertoBasculaToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1451,13 +1594,14 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
                         total += Convert.ToInt32(dgvAddFolios.Rows[i].Cells[10].Value.ToString());
                     }
                     txtBoxes.Text = total.ToString();
+                    getNetLibsPesaje();
                 }
             }
             else
             {
                 MessageBox.Show("El valor del cajas del folio debe ser mayor a 0", "Captura Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            
+
         }
 
         protected Boolean validateValueCajas(String newValueCajas)
@@ -1470,6 +1614,232 @@ namespace ArriboEmpaque.CapturaArriboEmpaque
             else
             {
                 return false;
+            }
+        }
+
+        private void tbControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tbControl.SelectedIndex == 0)
+            {
+                txtFolio.Focus();
+            }
+        }
+
+
+
+        #region Sección para reporte de folios por ID
+
+        protected void customizationTableFoliosByID()
+        {
+            Font fontGridFoliosID = new Font("Tahoma", 8, FontStyle.Regular);
+
+            dgvFoliosByID.AutoGenerateColumns = true;
+            dgvFoliosByID.AllowUserToAddRows = false;
+            dgvFoliosByID.AllowUserToDeleteRows = false;
+            dgvFoliosByID.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dgvFoliosByID.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dgvFoliosByID.RowsDefaultCellStyle.BackColor = Color.Bisque;
+            dgvFoliosByID.AlternatingRowsDefaultCellStyle.BackColor = Color.Beige;
+            dgvFoliosByID.CellBorderStyle = DataGridViewCellBorderStyle.None;
+            dgvFoliosByID.Font = fontGridFoliosID;
+            dgvFoliosByID.DefaultCellStyle.SelectionBackColor = (Color)System.Drawing.ColorTranslator.FromHtml("#78B266");
+            dgvFoliosByID.DefaultCellStyle.SelectionForeColor = Color.White;
+            dgvFoliosByID.AllowUserToResizeColumns = false;
+            dgvFoliosByID.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+        }
+
+        private void btnFiltrar2_Click(object sender, EventArgs e)
+        {
+            folio = txtFolioFilter.Text.ToString();
+            idPlant = Convert.ToInt32(cbPlants.SelectedValue);
+            idFolioHeader = !String.IsNullOrEmpty(txtID.Text.ToString()) ? Convert.ToInt32(txtID.Text.ToString()) : 0;
+            pbFoliosByID.Show();
+            pbFoliosByID.Value = 50;
+            lblLoadingFoliosByID.Show();
+            lblLoadingFoliosByID.Text = "Cargando Información...";
+            txtID.Enabled = false;
+            cbPlants2.Enabled = false;
+            dtpDateIni2.Enabled = false;
+            dtpDateFin2.Enabled = false;
+            btnFilter2.Enabled = false;
+            backgroundWorkerFilterFoliosByID.RunWorkerAsync();
+        }
+
+        private void backgroundWorkerFilterFoliosByID_DoWork(object sender, DoWorkEventArgs e)
+        {
+            String dateIni2 = dtpDateIni2.Value.Date.ToString("yyyy-MM-dd");
+            String dateFin2 = dtpDateFin2.Value.Date.ToString("yyyy-MM-dd");
+            int idPlant = Convert.ToInt32(cbPlants2.SelectedValue.ToString());
+            dsFoliosByID = filterFoliosByID(idFolioHeader, idPlant, dateIni2, dateFin2);
+        }
+
+        private void backgroundWorkerFilterFoliosByID_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            try
+            {
+                dtFoliosByID = dsFoliosByID.Tables[0];
+
+                if (dtFoliosByID.Rows.Count > 0)
+                {
+                    dgvFoliosByID.DataSource = dtFoliosByID;
+                    pbFoliosByID.Value = 100;
+                    pbFoliosByID.Hide();
+                    lblLoadingFoliosByID.Hide();
+                    txtID.Enabled = true;
+                    cbPlants2.Enabled = true;
+                    dtpDateIni2.Enabled = true;
+                    dtpDateFin2.Enabled = true;
+                    btnFilter2.Enabled = true;
+                }
+                else
+                {
+                    MessageBox.Show("No se encontraron registros para la fecha actual", "Consulta Arribo Empaque", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    pbFoliosByID.Hide();
+                    lblLoadingFoliosByID.Hide();
+                    txtID.Enabled = true;
+                    cbPlants2.Enabled = true;
+                    dtpDateIni2.Enabled = true;
+                    dtpDateFin2.Enabled = true;
+                    btnFilter2.Enabled = true;
+                    dgvFoliosByID.DataSource = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        protected DataSet filterFoliosByID(int idFolioHeader, int idPlant, String dateIni, String dateFin)
+        {
+            try
+            {
+                const String contentType = "application/x-www-form-urlencoded";
+                var url = config.pathWS + "/" + config.webMethodFilterFoliosByID;
+                String postString = String.Format("idFolioHeader={0}&idPlant={1}&dateIni={2}&dateFin={3}", idFolioHeader, idPlant, dateIni, dateFin);
+
+                CookieContainer cookies = new CookieContainer();
+                HttpWebRequest webRequest = WebRequest.Create(url) as HttpWebRequest;
+                webRequest.Method = "POST";
+                webRequest.ContentType = contentType;
+                webRequest.ContentLength = postString.Length;
+
+                StreamWriter requestWriter = new StreamWriter(webRequest.GetRequestStream());
+                requestWriter.Write(postString);
+                requestWriter.Close();
+
+                StreamReader responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
+                string responseData = responseReader.ReadToEnd();
+
+                responseReader.Close();
+                webRequest.GetResponse().Close();
+
+                DataSet ds = (DataSet)JsonConvert.DeserializeObject(responseData, typeof(DataSet));
+
+                return ds;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        #endregion
+
+        private void cbTareTarima_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbTareTarima.SelectedIndex >= 0)
+            {
+                if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()) && !String.IsNullOrEmpty(txtGrossLibs.Text.ToString()) 
+                    && !String.IsNullOrEmpty(cbTareTarima.SelectedValue.ToString()) && !String.IsNullOrEmpty(cbTareBox.SelectedValue.ToString()))
+                {
+
+                    getNetLibsPesaje();
+
+                }
+            }
+        }
+
+        protected void getNetLibsPesaje()
+        {
+            try
+            {
+                int cajas = Convert.ToInt32(txtBoxes.Text.ToString());
+
+                String gross = txtGrossLibs.Text.ToString();
+
+
+                int librasGross = Convert.ToInt32(txtGrossLibs.Text.ToString());
+                int idTarePlant = Convert.ToInt32(cbTareTarima.SelectedValue.ToString());
+                int idTareBox = Convert.ToInt32(cbTareBox.SelectedValue.ToString());
+
+                const String contentType = "application/x-www-form-urlencoded";
+                var url = config.pathWS + "/" + config.webMethodGetNetLibsPesaje;
+                String postString = String.Format("cajas={0}&librasGross={1}&idTarePlant={2}&idTareBox={3}", cajas, librasGross, idTarePlant, idTareBox);
+
+                CookieContainer cookies = new CookieContainer();
+                HttpWebRequest webRequest = WebRequest.Create(url) as HttpWebRequest;
+                webRequest.Method = "POST";
+                webRequest.ContentType = contentType;
+                webRequest.ContentLength = postString.Length;
+
+                StreamWriter requestWriter = new StreamWriter(webRequest.GetRequestStream());
+                requestWriter.Write(postString);
+                requestWriter.Close();
+
+                StreamReader responseReader = new StreamReader(webRequest.GetResponse().GetResponseStream());
+                string responseData = responseReader.ReadToEnd();
+
+                responseReader.Close();
+                webRequest.GetResponse().Close();
+
+                DataTable dt = (DataTable)JsonConvert.DeserializeObject(responseData, typeof(DataTable));
+
+                if (dt.Rows.Count > 0)
+                {
+                    int librasPlantaOrigen = Convert.ToInt32(txtNetLibsPlants.Text.ToString());
+                    Decimal librasPesaje = Convert.ToDecimal(dt.Rows[0]["dPoundsWeighing"].ToString());
+
+                    Decimal diferencia = (librasPesaje - librasPlantaOrigen);
+                    txtNetLibsPesaje.Text = librasPesaje.ToString();
+                    txtDifference.Text = diferencia.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        private void cbTareBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            if (cbTareBox.SelectedIndex >= 0)
+            {
+                if (!String.IsNullOrEmpty(txtBoxes.Text.ToString()) && !String.IsNullOrEmpty(txtGrossLibs.Text.ToString())
+                   && !String.IsNullOrEmpty(cbTareTarima.SelectedValue.ToString()) && !String.IsNullOrEmpty(cbTareBox.SelectedValue.ToString()))
+                {
+
+                    getNetLibsPesaje();
+
+                }
+            }
+        }
+
+        private void txtGrossLibs_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if ((int)e.KeyChar == (int)Keys.Enter)
+            {
+                getNetLibsPesaje();
+            }
+        }
+
+        private void txtGrossLibs_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyData == Keys.Tab)
+            {
+                getNetLibsPesaje();
             }
         }
     }

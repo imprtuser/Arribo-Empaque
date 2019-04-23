@@ -132,6 +132,9 @@
   <data name="contrasena" xml:space="preserve">
     <value>Contraseña</value>
   </data>
+  <data name="diferencia" xml:space="preserve">
+    <value>Diferencia</value>
+  </data>
   <data name="fecha" xml:space="preserve">
     <value>Fecha</value>
   </data>
@@ -149,6 +152,12 @@
   </data>
   <data name="librasNetas" xml:space="preserve">
     <value>Libras Gross</value>
+  </data>
+  <data name="librasNetasPesaje" xml:space="preserve">
+    <value>Libras netas pesaje</value>
+  </data>
+  <data name="librasNetasPlantaOrigen" xml:space="preserve">
+    <value>Libras netas planta origen</value>
   </data>
   <data name="noData" xml:space="preserve">
     <value>No hay Datos</value>
